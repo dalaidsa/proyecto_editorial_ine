@@ -30,5 +30,6 @@ Consulta el archivo [`CHANGELOG.md`](./CHANGELOG.md) para revisar el historial d
 
 ## 👨‍💻 Autor
 **Dalaí Serrano Alavez** - Analista de Datos  
-- LinkedIn: [https://www.linkedin.com/in/dalser/]
-- GitHub: [https://github.com/dalaidsa]
+- LinkedIn: https://www.linkedin.com/in/dalser/
+- GitHub: https://github.com/dalaidsa
+- X: @dalai_dsa
