@@ -1,6 +1,26 @@
+# --- Entorno Local de R y RStudio ---
 .Rproj.user
 .Rhistory
 .Rdata
+.Ruserdata
 .httr-oauth
 .DS_Store
 .quarto
+
+# --- Bases de Datos Locales y Archivos Temporales de DuckDB ---
+*.duckdb
+*.duckdb.wal
+*.duckdb.tmp
+data/*.duckdb
+data/*.duckdb.wal
+
+# --- Archivos de Datos y Descargas Pesadas ---
+data/*.csv
+data/*.xlsx
+data/*.pdf
+downloads/
+*.pdf
+
+# --- Configuración de Sistema Operativo ---
+Thumbs.db
+desktop.ini
