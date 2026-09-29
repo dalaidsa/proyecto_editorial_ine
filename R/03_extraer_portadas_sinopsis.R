@@ -4,6 +4,7 @@
 # OBJETIVO: Generación de sinopsis contextuales y metadatos de portadas
 # ==============================================================================
 
+
 library(dplyr)
 library(stringr)
 library(duckdb)
