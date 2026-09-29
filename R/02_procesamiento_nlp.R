@@ -4,6 +4,7 @@
 # OBJETIVO: Generación de sinopsis corta, palabras clave y ejes temáticos
 # ==============================================================================
 
+
 library(dplyr)
 library(stringr)
 library(duckdb)
