@@ -1,8 +1,9 @@
 # ==============================================================================
 # APLICACIÓN: app.R
 # PROYECTO: Buscador y Catálogo Digital del Acervo Editorial del INE
-# TECNOLOGÍAS: R Shiny + bslib (Bootstrap 5) + DT + DuckDB + Plotly ($0 USD)
+# TECNOLOGÍAS: R Shiny + bslib (Bootstrap 5) + DT + DuckDB + Plotly
 # ==============================================================================
+
 
 library(shiny)
 library(bslib)
