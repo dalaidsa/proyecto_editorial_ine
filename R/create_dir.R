@@ -14,3 +14,7 @@ file.edit("R/02_procesamiento_nlp.R")
 # Crear estructura de aplicación
 file.create("app.R")
 file.edit("app.R")
+
+# Script de Descarga de Portadas y Sinopsis
+file.create("R/03_extraer_portadas_sinopsis.R")
+file.edit("R/03_extraer_portadas_sinopsis.R")
