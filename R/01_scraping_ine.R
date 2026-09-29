@@ -4,7 +4,7 @@
 # OBJETIVO: Extracción multisección de publicaciones, colecciones y recursos del INE
 # ==============================================================================
 
-# 1. Cargar librerías necesarias
+## 1. Cargar librerías necesarias
 library(rvest)
 library(httr)
 library(dplyr)
