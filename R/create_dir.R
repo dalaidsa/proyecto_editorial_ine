@@ -10,3 +10,7 @@ file.edit("R/01_scraping_ine.R")
 # Crear script para Procesamiento de Lenguaje Natural
 file.create("R/02_procesamiento_nlp.R")
 file.edit("R/02_procesamiento_nlp.R")
+
+# Crear estructura de aplicación
+file.create("app.R")
+file.edit("app.R")
