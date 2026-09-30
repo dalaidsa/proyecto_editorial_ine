@@ -1,14 +1,52 @@
 # ==============================================================================
-# SCRIPT: 02_procesamiento_nlp.R (Versión Enriquecida: Sinopsis y Keywords)
+# SCRIPT: 02_procesamiento_nlp.R
 # PROYECTO: proyecto_editorial_ine
-# OBJETIVO: Generación de sinopsis corta, palabras clave y ejes temáticos
+# OBJETIVO: Clasificación temática, NLP y corrección de colecciones
 # ==============================================================================
 
-
+library(duckdb)
 library(dplyr)
 library(stringr)
-library(duckdb)
 library(readr)
+
+# 1. Leer datos crudos desde DuckDB
+con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb")
+df_raw <- dbReadTable(con, "acervo_editorial")
+
+message("[i] Iniciando procesamiento NLP y depuración de colecciones...")
+
+# 2. Enriquecimiento, reglas NLP y corrección de colecciones
+df_enriquecido <- df_raw %>%
+  mutate(
+    # REGLA DE CORRECCIÓN: Separar 'Manuales y Guías' de 'Cuadernos de Divulgación'
+    coleccion = case_when(
+      str_detect(tolower(coalesce(titulo, "")), "manual|guía|guia|taller|didáctic|didactic") ~ "Manuales y Guías Didácticas",
+      TRUE ~ coleccion
+    ),
+
+    # Asignación de Eje Temático por minería de texto
+    eje_tematico = case_when(
+      str_detect(tolower(coalesce(titulo, "")), "paridad|género|mujeres|violencia|politica") ~ "Paridad de Género y DDHH",
+      str_detect(tolower(coalesce(titulo, "")), "voto|electoral|elecciones|partidos|sistema") ~ "Sistemas y Procesos Electorales",
+      str_detect(tolower(coalesce(titulo, "")), "transparencia|rendición|cuentas|fiscalización") ~ "Transparencia y Rendición de Cuentas",
+      str_detect(tolower(coalesce(titulo, "")), "infancia|niñez|juventud|educación|didáctic") ~ "Educación Cívica e Infancias",
+      TRUE ~ "Cultura Democrática y Ciudadanía"
+    ),
+
+    # Asignación de Palabras Clave (#Keywords)
+    palabras_clave = case_when(
+      str_detect(tolower(coalesce(titulo, "")), "paridad|género|mujeres") ~ "INE, Paridad, DerechosHumanos, Igualdad",
+      str_detect(tolower(coalesce(titulo, "")), "voto|elecciones") ~ "INE, Voto, Elecciones, Democracia",
+      str_detect(tolower(coalesce(titulo, "")), "transparencia") ~ "INE, Transparencia, RendicionDeCuentas",
+      TRUE ~ "INE, CulturaDemocrática, Ciudadanía"
+    )
+  )
+
+# 3. Guardar dataset enriquecido en DuckDB
+dbWriteTable(con, "acervo_enriquecido", df_enriquecido, overwrite = TRUE)
+dbDisconnect(con, shutdown = TRUE)
+
+message("[✓] Procesamiento NLP y reestructuración de colecciones completado.")
 
 # 1. Leer datos crudos desde DuckDB
 con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb")
