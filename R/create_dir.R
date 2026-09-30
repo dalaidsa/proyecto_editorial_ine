@@ -15,6 +15,6 @@ file.edit("R/02_procesamiento_nlp.R")
 file.create("app.R")
 file.edit("app.R")
 
-# Script de Descarga de Portadas y Sinopsis
-file.create("R/03_extraer_portadas_sinopsis.R")
-file.edit("R/03_extraer_portadas_sinopsis.R")
+# Script de extracción de portadas
+file.create("04_extraer_portadas.R")
+file.edit("04_extraer_portadas.R")
