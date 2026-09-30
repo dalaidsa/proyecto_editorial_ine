@@ -3,13 +3,15 @@
 ![R](https://img.shields.io/badge/R-4.3+-blue.svg)
 ![DuckDB](https://img.shields.io/badge/DuckDB-Analytics-yellow.svg)
 ![R Shiny](https://img.shields.io/badge/R_Shiny-Interactive-magenta.svg)
-![License](https://img.shields.io/badge/Cost-$0_USD-brightgreen.svg)
+![Architecture](https://img.shields.io/badge/Pipeline-Modular_R/-008080.svg)
 
 ## 📌 Descripción del Proyecto
 
 Caso de estudio para rediseñar la experiencia de usuario en la búsqueda, exploración y visualización de las **publicaciones editoriales** del Instituto Nacional Electoral (INE).
 
 Este proyecto aborda la extracción automatizada de datos, el almacenamiento analítico eficiente, el desarrollo de un motor de búsqueda por facetas y la creación de infografías vectoriales interactivas.
+
+Plataforma interactiva para la exploración, filtrado por ejes temáticos y consulta de sinopsis del acervo de publicaciones del Instituto Nacional Electoral (INE).
 
 ---
 
