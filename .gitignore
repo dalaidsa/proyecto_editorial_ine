@@ -6,6 +6,7 @@
 .httr-oauth
 .DS_Store
 .quarto
+.Renviron
 
 # --- Bases de Datos Locales y Archivos Temporales de DuckDB ---
 *.duckdb
