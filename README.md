@@ -23,6 +23,18 @@ Este proyecto aborda la extracción automatizada de datos, el almacenamiento ana
 
 ---
 
+## 🏗️ Arquitectura del Pipeline (`R/`)
+
+El procesamiento de datos sigue una estructura modular y reproducible:
+
+1. **`R/01_scraping_ine.R`**: Descarga y extracción inicial de metadatos desde el portal del INE.
+2. **`R/02_procesamiento_nlp.R`**: Clasificación por Ejes Temáticos, palabras clave (#Keywords) y separación estricta de colecciones.
+3. **`R/03_generar_sinopsis.R`**: Redacción y limpieza de resúmenes ejecutivos directos (< 45 palabras) para cada obra.
+4. **`R/04_extraer_portadas.R`**: Extracción protegida de portadas PDF a JPG (`pdftools`) y generación sintética para enlaces/videos.
+5. **`app.R`**: Interfaz de usuario en R Shiny con galería de tarjetas y vista tabular.
+
+---
+
 ## 📅 Diario de Desarrollo (Build in Public)
 Consulta el archivo [`CHANGELOG.md`](./CHANGELOG.md) para revisar el historial de avances diarios, retos superados y decisiones de arquitectura técnica.
 

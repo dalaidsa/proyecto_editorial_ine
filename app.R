@@ -262,8 +262,12 @@ server <- function(input, output, session) {
       kw_raw <- coalesce(item$palabras_clave, "INE, Cultura Democrática")
       tags_kw <- unlist(strsplit(kw_raw, ",\\s*"))
 
-      # Respaldo para la Sinopsis
-      sinopsis_txt <- coalesce(item$sinopsis_real, item$sinopsis, item$descripcion, "Publicación oficial del Instituto Nacional Electoral.")
+      # Utiliza la sinopsis de la IA (sinopsis_real). Si no existe, muestra el mensaje predeterminado.
+      sinopsis_txt <- ifelse(
+        !is.na(item$sinopsis_real) & nchar(str_squish(item$sinopsis_real)) > 15 & !str_detect(item$sinopsis_real, "Publicado el:"),
+        item$sinopsis_real,
+        "Sinopsis no disponible para esta obra."
+      )
 
       # Ruta de la imagen local en www/portadas/
       img_src <- sprintf("portadas/portada_%d.jpg", item$id_obra)

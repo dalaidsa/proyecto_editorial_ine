@@ -2,13 +2,13 @@
 
 ---
 
-- **2026-09-26 (Día 1):**
+- **2026-09-26:**
 ##  - Configuración e Ingeniería de Datos
 
   - Inicialización del repositorio `proyecto_editorial_ine` en RStudio y vinculación con GitHub.
   - Definición de arquitectura técnica de software open source (OSS) y estructura de archivos base.
   
-- **2026-09-28 (Día 2):** 
+- **2026-09-28:** 
 
 ## - Jornada Completa: Pipeline de Datos, Enriquecimiento NLP, UX E-Commerce y App R Shiny
 
@@ -69,3 +69,19 @@
 - **Error `argumento tiene longitud cero` en `lapply`:** Corregido reemplazando `1:min()` por `seq_len(limite)` y agregando una validación previa para datasets vacíos `nrow(df) == 0`.
 - **Error en Íconos Shiny:** Reemplazada la llamada no válida `i()` por `icon()` nativo de FontAwesome.
 - **Error de fuentes Poppler (`Invalid Font Weight`):** Superado creando un generador local de portadas JPG respaldado por un gestor de errores HTML (`onerror`) en las etiquetas `<img>` de Shiny.
+
+# Changelog
+
+## [1.2.0] - **2026-09-29**
+
+### 🚀 Añadido
+- **Pipeline Modular:** Separación estricta de responsabilidades en la carpeta `R/`:
+  - `R/01_scraping_ine.R`: Extracción de metadatos de la web del INE.
+  - `R/02_procesamiento_nlp.R`: Minería de texto, asignación de ejes temáticos y reestructuración de colecciones.
+  - `R/03_generar_sinopsis.R`: Generación estricta y limpia de sinopsis editoriales (máximo 45 palabras) sin repetitividad.
+  - `R/04_extraer_portadas.R`: Extracción aislada de JPGs desde PDF e imágenes sintéticas de respaldo.
+
+### 🛠️ Cambios y Correcciones
+- **Reclasificación de Colecciones:** Se separó la categoría *Manuales y Guías Didácticas* de la colección *Cuadernos de Divulgación de la Cultura Democrática* en DuckDB.
+- **Resiliencia de Sinopsis:** Implementación de un generador sintáctico determinista local e integraciones seguras con LLMs, eliminando errores `HTTP 429` (Quota) y `HTTP 404`.
+- **Renderizado en Shiny:** Eliminación de texto basura de scraping (`Publicado el:...`) e integración de `addResourcePath()` en `app.R` para asegurar la carga inmediata de las 357 portadas locales en `www/portadas/`.
