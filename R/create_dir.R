@@ -18,3 +18,7 @@ file.edit("app.R")
 # Script de extracción de portadas
 file.create("04_extraer_portadas.R")
 file.edit("04_extraer_portadas.R")
+
+# Script de extracción de portadas
+file.create("05_generar_resumenes_3pag.R")
+file.edit("05_generar_resumenes_3pag.R")
