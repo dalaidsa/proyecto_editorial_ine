@@ -4,7 +4,6 @@
 # TECNOLOGÍAS: R Shiny + bslib (Bootstrap 5) + DT + DuckDB + Plotly
 # ==============================================================================
 
-
 library(shiny)
 library(bslib)
 library(DT)
@@ -19,7 +18,18 @@ if (dir.exists("www/portadas")) {
 }
 
 # ------------------------------------------------------------------------------
-# 1. CARGA DE DATOS DESDE DUCKDB
+# FUNCIÓN AUXILIAR DE SANITIZACIÓN DE TEXTO
+# ------------------------------------------------------------------------------
+limpiar_cadena_corrupta <- function(txt) {
+  if (is.null(txt) || is.na(txt)) return("")
+  res <- as.character(txt)
+  res <- gsub("[\\v\\r\\n\\t\\f\\p{C}]", " ", res, perl = TRUE)
+  res <- gsub("(?i)\\s*ert\\{\\}\\s*", " ", res, perl = TRUE)
+  return(trimws(gsub("\\s+", " ", res)))
+}
+
+# ------------------------------------------------------------------------------
+# 1. CARGA DE DATOS DESDE DUCKDB Y LIMPIEZA INICIAL
 # ------------------------------------------------------------------------------
 conectar_db <- function() {
   con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb", read_only = TRUE)
@@ -41,17 +51,46 @@ if ("acervo_enriquecido" %in% dbListTables(con)) {
 }
 dbDisconnect(con, shutdown = TRUE)
 
-# Asegurar identificador y columna de portadas
+# Normalizaciones defensivas de columnas
+if (!"url_recurso" %in% colnames(datos_acervo)) {
+  if ("url_descarga" %in% colnames(datos_acervo)) {
+    datos_acervo$url_recurso <- datos_acervo$url_descarga
+  } else if ("url" %in% colnames(datos_acervo)) {
+    datos_acervo$url_recurso <- datos_acervo$url
+  } else {
+    datos_acervo$url_recurso <- "#"
+  }
+}
+
+if (!"tipo_recurso" %in% colnames(datos_acervo)) {
+  if ("formato" %in% colnames(datos_acervo)) {
+    datos_acervo$tipo_recurso <- datos_acervo$formato
+  } else {
+    datos_acervo$tipo_recurso <- "PDF"
+  }
+}
+
+# Aplicar sanitización a la base de datos cargada
+cols_char <- names(datos_acervo)[sapply(datos_acervo, is.character)]
+for (col in cols_char) {
+  datos_acervo[[col]] <- sapply(datos_acervo[[col]], limpiar_cadena_corrupta, USE.NAMES = FALSE)
+}
+
+# Filtrar ficha genérica de la sección
+datos_acervo <- datos_acervo %>%
+  filter(!str_detect(str_to_lower(coalesce(url_recurso, "")), "cuadernos-divulgacion-manuales-guias/?$"))
+
 if (!"id_obra" %in% colnames(datos_acervo)) {
   datos_acervo$id_obra <- seq_len(nrow(datos_acervo))
 }
+
 if (!"ruta_portada" %in% colnames(datos_acervo)) {
   datos_acervo$ruta_portada <- paste0("portadas/portada_", datos_acervo$id_obra, ".jpg")
 }
 
-opciones_coleccion <- c("Todas", sort(unique(datos_acervo$coleccion)))
-opciones_eje       <- c("Todos", sort(unique(datos_acervo$eje_tematico)))
-opciones_tipo      <- c("Todos", sort(unique(datos_acervo$tipo_recurso)))
+opciones_coleccion <- c("Todas", sort(unique(na.omit(datos_acervo$coleccion[datos_acervo$coleccion != ""]))))
+opciones_eje       <- c("Todos", sort(unique(na.omit(datos_acervo$eje_tematico[datos_acervo$eje_tematico != ""]))))
+opciones_tipo      <- c("Todos", sort(unique(na.omit(datos_acervo$tipo_recurso[datos_acervo$tipo_recurso != ""]))))
 
 # ------------------------------------------------------------------------------
 # 2. INTERFAZ DE USUARIO (UI)
@@ -66,7 +105,6 @@ ui <- page_navbar(
     `enable-shadows` = TRUE
   ),
 
-  # PESTAÑA PRINCIPAL: LIBRERÍA / CATÁLOGO
   nav_panel(
     title = "Catálogo de Libros",
     icon = icon("book-open-reader"),
@@ -114,7 +152,6 @@ ui <- page_navbar(
         actionButton("btn_limpiar", "Restablecer Filtros", icon = icon("rotate-left"), class = "btn-outline-dark btn-sm w-100 mt-2")
       ),
 
-      # Indicadores Superiores (Value Boxes)
       layout_columns(
         fill = FALSE,
         value_box(
@@ -137,12 +174,10 @@ ui <- page_navbar(
         )
       ),
 
-      # VISTA DINÁMICA (GALERÍA O TABLA)
       uiOutput("contenedor_vista_dinamica")
     )
   ),
 
-  # PESTAÑA: MÉTRICAS Y DASHBOARD
   nav_panel(
     title = "Análisis del Acervo",
     icon = icon("chart-pie"),
@@ -158,13 +193,12 @@ ui <- page_navbar(
     )
   ),
 
-  # PESTAÑA: CASO DE ESTUDIO
   nav_panel(
     title = "Acerca del Proyecto",
     icon = icon("circle-info"),
     card(
       card_header("Caso de Estudio: Optimización del Acervo Editorial del INE"),
-      p("Buscador e-commerce e interfaz analítica desarrollada de forma independiente para explorar las publicaciones institucionales del INE."),
+      p("Propuesta de catalogación del sello editorial del INE para mejorar la experiencia de usuario en la exploración de las publicaciones."),
       tags$ul(
         tags$li(strong("Stack Tecnológico:"), " R, R Shiny, DuckDB, bslib, DT, rvest, plotly."),
         tags$li(strong("Ingeniería de Datos:"), " Web scraping multisección con rotación de User-Agents y etiquetado NLP."),
@@ -179,7 +213,6 @@ ui <- page_navbar(
 # ------------------------------------------------------------------------------
 server <- function(input, output, session) {
 
-  # Filtrado Reactivo por Búsqueda Multidimensional
   datos_filtrados <- reactive({
     df <- datos_acervo
 
@@ -211,7 +244,6 @@ server <- function(input, output, session) {
     return(df)
   })
 
-  # Restablecer Filtros
   observeEvent(input$btn_limpiar, {
     updateTextInput(session, "txt_busqueda", value = "")
     updateSelectInput(session, "sel_coleccion", selected = "Todas")
@@ -219,12 +251,10 @@ server <- function(input, output, session) {
     updateCheckboxGroupInput(session, "chk_tipo", selected = setdiff(opciones_tipo, "Todos"))
   })
 
-  # Indicadores Numéricos
   output$val_total_recursos <- renderText({ nrow(datos_filtrados()) })
   output$val_total_colecciones <- renderText({ n_distinct(datos_filtrados()$coleccion) })
   output$val_total_formatos <- renderText({ n_distinct(datos_filtrados()$tipo_recurso) })
 
-  # Renderizado de Vista Dinámica
   output$contenedor_vista_dinamica <- renderUI({
     if (input$tipo_vista == "galeria") {
       uiOutput("galeria_libros")
@@ -236,7 +266,6 @@ server <- function(input, output, session) {
     }
   })
 
-  # GENERADOR DE GALERÍA CON PORTADAS Y SINOPSIS GARANTIZADAS
   output$galeria_libros <- renderUI({
     df <- datos_filtrados()
 
@@ -256,21 +285,38 @@ server <- function(input, output, session) {
     tarjetas <- lapply(seq_len(limite), function(i_idx) {
       item <- df[i_idx, ]
 
-      eje_txt <- coalesce(item$eje_tematico, "General")
-      badge_color <- if(str_detect(eje_txt, "Paridad")) "bg-danger" else "bg-dark"
+      # Sanitización al vuelo para evitar remanentes de ert{} o caracteres invisibles
+      coleccion_limpia <- limpiar_cadena_corrupta(item$coleccion)
+      eje_limpio       <- limpiar_cadena_corrupta(item$eje_tematico)
+      titulo_limpio    <- limpiar_cadena_corrupta(item$titulo)
+
+      badge_color <- if(str_detect(eje_limpio, "Paridad")) "bg-danger" else "bg-dark"
 
       kw_raw <- coalesce(item$palabras_clave, "INE, Cultura Democrática")
       tags_kw <- unlist(strsplit(kw_raw, ",\\s*"))
 
-      # Utiliza la sinopsis de la IA (sinopsis_real). Si no existe, muestra el mensaje predeterminado.
       sinopsis_txt <- ifelse(
         !is.na(item$sinopsis_real) & nchar(str_squish(item$sinopsis_real)) > 15 & !str_detect(item$sinopsis_real, "Publicado el:"),
-        item$sinopsis_real,
+        limpiar_cadena_corrupta(item$sinopsis_real),
         "Sinopsis no disponible para esta obra."
       )
 
-      # Ruta de la imagen local en www/portadas/
       img_src <- sprintf("portadas/portada_%d.jpg", item$id_obra)
+
+      tiene_resumen_3p <- "resumen_ejecutivo_3p" %in% colnames(item) &&
+        !is.na(item$resumen_ejecutivo_3p) &&
+        nchar(trimws(coalesce(item$resumen_ejecutivo_3p, ""))) > 50
+
+      btn_resumen_3p <- if (tiene_resumen_3p) {
+        actionButton(
+          inputId = paste0("btn_resumen_", item$id_obra),
+          label = " Resumen (IA)",
+          icon = icon("brain"),
+          class = "btn-outline-info btn-sm w-100 rounded-pill fw-bold mb-2"
+        )
+      } else {
+        NULL
+      }
 
       div(
         class = "col-12 col-sm-6 col-md-4 col-lg-3 mb-4",
@@ -278,7 +324,6 @@ server <- function(input, output, session) {
           class = "card h-100 shadow-sm border-0 transition-all",
           style = "border-radius: 12px; overflow: hidden; background: #ffffff;",
 
-          # PORTADA VISUAL DEL LIBRO
           div(
             class = "d-flex align-items-center justify-content-center bg-light p-2 position-relative border-bottom",
             style = "height: 220px; overflow: hidden; background-color: #f8f9fa;",
@@ -286,27 +331,24 @@ server <- function(input, output, session) {
             tags$img(
               src = img_src,
               style = "max-height: 100%; max-width: 100%; object-fit: contain; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);",
-              alt = item$titulo,
+              alt = titulo_limpio,
               onerror = "this.onerror=null; this.src='portadas/portada_generica.jpg';"
             )
           ),
 
-          # DETALLES Y SINOPSIS DE LA OBRA
           div(
             class = "card-body d-flex flex-column justify-content-between p-3",
             div(
-              h6(class = "card-title fw-bold text-truncate-2 mb-1", style = "font-size: 0.88rem; line-height: 1.2;", item$titulo),
-              p(class = "text-muted small mb-1 text-truncate", icon("bookmark"), " ", item$coleccion),
-              p(class = "badge bg-light text-dark border mb-2", eje_txt),
+              h6(class = "card-title fw-bold text-truncate-2 mb-1", style = "font-size: 0.88rem; line-height: 1.2;", titulo_limpio),
+              p(class = "text-muted small mb-1 text-truncate", icon("bookmark"), " ", coleccion_limpia),
+              p(class = "badge bg-light text-dark border mb-2", eje_limpio),
 
-              # SINOPSIS VISIBLE DE LA OBRA
               div(
                 class = "card-text small text-secondary mb-2",
-                style = "font-size: 0.8rem; line-height: 1.35; color: #4a5568;",
-                p(strong("Sinopsis: "), str_trunc(sinopsis_txt, 140))
+                style = "font-size: 0.88rem; line-height: 1.35; color: #4a5568;",
+                p(strong("Sinopsis: "), str_trunc(sinopsis_txt, 250))
               ),
 
-              # TAGS DE PALABRAS CLAVE
               div(
                 class = "mb-2",
                 lapply(tags_kw, function(tag) {
@@ -315,12 +357,13 @@ server <- function(input, output, session) {
               )
             ),
 
-            # BOTÓN DE ENLACE DIRECTO
             div(
               class = "mt-2 pt-2 border-top text-center",
+              btn_resumen_3p,
               a(
                 href = item$url_recurso,
                 target = "_blank",
+                rel = "noopener noreferrer",
                 class = "btn btn-sm btn-outline-dark w-100 rounded-pill fw-bold",
                 icon("book-open"), " Leer / Descargar"
               )
@@ -333,7 +376,46 @@ server <- function(input, output, session) {
     div(class = "row", tarjetas)
   })
 
-  # Tabla Interactiva Alternativa (DT)
+  # MODAL CON FORMATO DE PÁRRAFOS Y SALTO DE LÍNEA TRAS EL ENCABEZADO
+  observe({
+    df <- datos_filtrados()
+    if (is.null(df) || nrow(df) == 0 || !"resumen_ejecutivo_3p" %in% colnames(df)) return()
+
+    lapply(seq_len(nrow(df)), function(i) {
+      item <- df[i, ]
+      btn_id <- paste0("btn_resumen_", item$id_obra)
+
+      observeEvent(input[[btn_id]], {
+        resumen_raw <- coalesce(item$resumen_ejecutivo_3p, "Resumen no disponible.")
+
+        # Limpieza de prefijos OBRA y ert{}
+        resumen_limpio <- str_replace(resumen_raw, "(?i)^\\s*OBRA:\\s*.*?(\r?\n)+", "")
+        resumen_limpio <- limpiar_cadena_corrupta(resumen_limpio)
+
+        # Asegurar salto de línea tras el encabezado 'RESUMEN EJECUTIVO'
+        resumen_limpio <- str_replace(resumen_limpio, "(?i)^RESUMEN EJECUTIVO\\s*", "RESUMEN EJECUTIVO\n\n")
+
+        showModal(modalDialog(
+          title = tagList(icon("brain"), " Resumen Ejecutivo (elaborado por IA)"),
+          size = "l",
+          easyClose = TRUE,
+          footer = modalButton("Cerrar"),
+
+          tags$div(
+            style = "max-height: 70vh; overflow-y: auto; padding: 15px; background: #fafafa; border-radius: 8px;",
+            tags$h5(limpiar_cadena_corrupta(item$titulo), style = "color: #1D3557; font-weight: 700; margin-bottom: 5px;"),
+            tags$p(class = "text-muted small mb-3", paste("Colección:", limpiar_cadena_corrupta(item$coleccion), "| Eje:", limpiar_cadena_corrupta(item$eje_tematico))),
+            hr(),
+            tags$div(
+              style = "white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6; color: #334155;",
+              resumen_limpio
+            )
+          )
+        ))
+      }, ignoreInit = TRUE)
+    })
+  })
+
   output$tabla_acervo <- renderDT({
     df_tabla <- datos_filtrados() %>%
       mutate(
@@ -347,7 +429,6 @@ server <- function(input, output, session) {
     )
   })
 
-  # Gráficos de Análisis (Plotly)
   output$grafico_ejes <- renderPlotly({
     df_chart <- datos_filtrados() %>% count(eje_tematico)
     plot_ly(df_chart, x = ~n, y = ~reorder(eje_tematico, n), type = "bar", orientation = "h", marker = list(color = "#1D3557"))
