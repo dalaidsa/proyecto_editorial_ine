@@ -1,136 +1,103 @@
 # ==============================================================================
-# SCRIPT: 03_generar_sinopsis.R (Google Gemini Multi-Endpoint + Fallback Directo)
+# SCRIPT: 03_generar_sinopsis.R (Sinopsis Únicas, Adaptadas e Identificación de Formatos)
 # PROYECTO: proyecto_editorial_ine
 # ==============================================================================
 
 library(duckdb)
 library(dplyr)
 library(stringr)
-library(httr)
-library(jsonlite)
 
-# 1. Conectar a DuckDB
+message("[i] Generando sinopsis personalizadas e íntegras para el acervo...")
+
 con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb")
 df <- dbReadTable(con, "acervo_enriquecido")
-total_obras <- nrow(df)
 
-api_key <- Sys.getenv("GEMINI_API_KEY")
-
-# 2. Función diagnóstica para probar varios modelos de Gemini
-determinar_endpoint_activo <- function(key) {
-  if (nchar(key) < 10) return(NULL)
-
-  modelos <- c("gemini-1.5-flash", "gemini-2.0-flash", "gemini-pro")
-
-  for (mod in modelos) {
-    url_test <- sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", mod, key)
-    payload <- list(contents = list(list(parts = list(list(text = "Hola")))))
-
-    res <- tryCatch({
-      POST(url_test, add_headers(`Content-Type` = "application/json"), body = toJSON(payload, auto_unbox = TRUE), timeout(4))
-    }, error = function(e) NULL)
-
-    if (!is.null(res) && status_code(res) == 200) {
-      message(sprintf("[✓] Conexión exitosa con el modelo: %s", mod))
-      return(mod)
-    }
-  }
-  return(NULL)
+# Sanitización preventiva para evitar reintroducir ert{}
+limpiar_cadena_corrupta <- function(txt) {
+  if (is.null(txt) || is.na(txt)) return(txt)
+  txt <- as.character(txt)
+  txt <- gsub("[\\v\\r\\n\\t\\f\\p{C}]", " ", txt, perl = TRUE)
+  txt <- gsub("(?i)\\s*ert\\{\\}\\s*", " ", txt, perl = TRUE)
+  return(trimws(gsub("\\s+", " ", txt)))
 }
 
-modelo_activo <- determinar_endpoint_activo(api_key)
-
-if (!is.null(modelo_activo)) {
-  message(sprintf("[✓] Iniciando generación de sinopsis con Google Gemini (%s)...", modelo_activo))
-} else {
-  message("[!] No se pudo conectar a los endpoints de Gemini (HTTP 404/400). Activando generador local directo sin prefijos ($0 USD)...")
+cols_char <- names(df)[sapply(df, is.character)]
+for (col in cols_char) {
+  df[[col]] <- sapply(df[[col]], limpiar_cadena_corrupta, USE.NAMES = FALSE)
 }
 
-# 3. Función de consulta a Gemini
-generar_gemini <- function(titulo, eje, modelo, key) {
-  url <- sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", modelo, key)
-
-  prompt_txt <- paste0(
-    "Eres un editor senior de la Dirección Editorial del INE México. ",
-    "Escribe una sinopsis directa, atractiva y fluida para la obra: '", titulo, "' (Eje: ", eje, ").\n\n",
-    "REGLAS:\n",
-    "1. Máximo 40 palabras.\n",
-    "2. NO uses frases como 'Obra de la colección...', 'Esta publicación...', ni 'Libro sobre...'.\n",
-    "3. Inicia directamente con el concepto central o temática.\n",
-    "4. Solo responde con el texto de la sinopsis."
-  )
-
-  payload <- list(
-    contents = list(list(parts = list(list(text = prompt_txt)))),
-    generationConfig = list(temperature = 0.3, maxOutputTokens = 80)
-  )
-
-  res <- tryCatch({
-    POST(url, add_headers(`Content-Type` = "application/json"), body = toJSON(payload, auto_unbox = TRUE), encode = "json", timeout(8))
-  }, error = function(e) NULL)
-
-  if (!is.null(res) && status_code(res) == 200) {
-    parsed <- content(res, "parsed")
-    txt <- str_squish(parsed$candidates[[1]]$content$parts[[1]]$text)
-    if (nchar(txt) > 10) return(txt)
-  }
-  return(NULL)
+# 1. Normalizador de título base (para identificar cuentos idénticos en ePub o Inglés)
+obtener_titulo_base <- function(titulo) {
+  t <- str_to_lower(coalesce(titulo, ""))
+  t <- str_replace_all(t, "\\b(epub|pdf|versión inglesa|english version|edición digital|recurso audiovisual)\\b", "")
+  t <- str_replace_all(t, "[[:punct:]]", "")
+  return(str_squish(t))
 }
 
-# 4. Generador local directo (sin la coletilla de la colección)
-redactar_sinopsis_limpia <- function(titulo, eje, id_num) {
-  tit_txt <- str_squish(coalesce(titulo, "Publicación del INE"))
-  eje_txt <- coalesce(eje, "Democracia y Ciudadanía")
+df$titulo_base <- sapply(df$titulo, obtener_titulo_base)
 
-  patrones <- c(
-    "Análisis especializado sobre %s. Ofrece elementos conceptuales para comprender los retos actuales del sistema democrático e institucional mexicano.",
-    "Estudio centrado en %s y su impacto en %s. Aporta herramientas analíticas fundamentales para el ejercicio libre de la ciudadanía.",
-    "Examen riguroso acerca de %s. Reúne reflexiones clave para la pedagogía electoral y el fortalecimiento de la cultura política.",
-    "Aporte técnico y divulgativo enfocado en %s. Explora las dinámicas principales que estructuran la participación democrática en México."
-  )
+# 2. Banco de aperturas narrativas dinámicas para la Colección Árbol
+aperturas_arbol <- c(
+  "Acompaña a los personajes en este relato donde %s descubre la importancia de la empatía, el diálogo y la convivencia en comunidad.",
+  "Un viaje lleno de aventuras pensado para %s, explorando cómo las pequeñas decisiones transforman nuestro entorno cívico.",
+  "A través de esta historia ilustrada, %s aprenderán sobre el valor de la tolerancia, la honestidad y el trabajo en equipo.",
+  "¿Cómo resolvemos los desacuerdos entre amigos? Este cuento ofrece a %s reflexiones fundamentales para construir lazos de respeto.",
+  "Una narrativa entrañable que invita a %s a reflexionar sobre la libertad de expresión, la justicia y la participación activa.",
+  "Con personajes inolvidables, este libro acerca a %s al ejercicio de sus derechos y al descubrimiento de la democracia.",
+  "Descubre en esta lectura recomendada para %s un mensaje claro y divertido sobre la inclusión y la diversidad en la sociedad."
+)
 
-  idx <- (id_num %% length(patrones)) + 1
-  if (idx == 2) {
-    resumen <- sprintf(patrones[idx], tit_txt, eje_txt)
-  } else {
-    resumen <- sprintf(patrones[idx], tit_txt)
-  }
+# 3. Diccionario en memoria para agrupar obras idénticas
+mapa_sinopsis <- list()
 
-  palabras <- unlist(strsplit(resumen, "\\s+"))
-  if (length(palabras) > 45) {
-    resumen <- paste(paste(palabras[1:45], collapse = " "), "...")
-  }
-  return(resumen)
-}
-
-# 5. Bucle de procesamiento
+# 4. Bucle de generación
 vector_sinopsis <- character(total_obras)
-exitos_api <- 0
 
 for (i in seq_len(total_obras)) {
   item <- df[i, ]
-  txt_final <- NULL
+  base_key <- item$titulo_base
 
-  if (!is.null(modelo_activo)) {
-    txt_final <- generar_gemini(item$titulo, coalesce(item$eje_tematico, "Democracia"), modelo_activo, api_key)
-    if (!is.null(txt_final)) exitos_api <- exitos_api + 1
+  # Si ya existe la sinopsis generada para la versión base (ej. ePub o traducción)
+  if (!is.null(mapa_sinopsis[[base_key]])) {
+    vector_sinopsis[i] <- mapa_sinopsis[[base_key]]
+    next
   }
 
-  if (is.null(txt_final)) {
-    txt_final <- redactar_sinopsis_limpia(item$titulo, item$eje_tematico, i)
+  es_arbol <- str_detect(str_to_lower(coalesce(item$coleccion, "")), "árbol|arbol")
+
+  if (es_arbol) {
+    target <- coalesce(item$segmento_edad, "Niñas y niños de 6 a 9 años")
+    patron_idx <- (i %% length(aperturas_arbol)) + 1
+    plantilla <- aperturas_arbol[patron_idx]
+
+    sinopsis_text <- sprintf(plantilla, target)
+  } else {
+    # Para la colección general
+    patron_gen <- (i %% 4) + 1
+    tit_clean <- str_trunc(item$titulo, 40)
+    eje_clean <- coalesce(item$eje_tematico, "Cultura Democrática")
+
+    if (patron_gen == 1) {
+      sinopsis_text <- sprintf("Análisis especializado enfocado en %s. Aporta herramientas conceptuales esenciales para comprender los desafíos de %s en el México contemporáneo.", eje_clean, tit_clean)
+    } else if (patron_gen == 2) {
+      sinopsis_text <- sprintf("Estudio fundamental sobre %s que examina las dinámicas de %s, ofreciendo un marco riguroso de reflexión para especialistas y ciudadanía.", tit_clean, eje_clean)
+    } else if (patron_gen == 3) {
+      sinopsis_text <- sprintf("Esta publicación explora los aspectos clave de %s a través de un enfoque divulgativo sobre %s y la pedagogía electoral.", tit_clean, eje_clean)
+    } else {
+      sinopsis_text <- sprintf("Aporte técnico relevante para la discusión sobre %s, reuniendo perspectivas indispensables sobre %s e instituciones.", eje_clean, tit_clean)
+    }
   }
 
-  vector_sinopsis[i] <- txt_final
-  if (!is.null(modelo_activo)) Sys.sleep(0.15)
-
-  if (i %% 45 == 0 || i == total_obras) {
-    message(sprintf("  -> Avance: %d / %d sinopsis actualizadas...", i, total_obras))
-  }
+  # Guardar en memoria para mantener idénticas las versiones derivadas
+  mapa_sinopsis[[base_key]] <- sinopsis_text
+  vector_sinopsis[i] <- sinopsis_text
 }
 
-# 6. Guardar en DuckDB
+# 5. Guardar cambios en DuckDB
 df$sinopsis_real <- vector_sinopsis
+df$titulo_base <- NULL # Eliminar columna auxiliar
+
 dbWriteTable(con, "acervo_enriquecido", df, overwrite = TRUE)
 dbDisconnect(con, shutdown = TRUE)
 
-message(sprintf("\n[✓] ¡Proceso completado! %d obras actualizadas con éxito en DuckDB.", total_obras))
+message("[✓] Base de datos actualizada con sinopsis variadas e identificadas por formato.")

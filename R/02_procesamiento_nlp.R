@@ -1,133 +1,105 @@
 # ==============================================================================
-# SCRIPT: 02_procesamiento_nlp.R
+# SCRIPT: 02_procesamiento_nlp.R (Limpieza, Tags y Colecciones Actualizadas)
 # PROYECTO: proyecto_editorial_ine
-# OBJETIVO: Clasificación temática, NLP y corrección de colecciones
 # ==============================================================================
 
 library(duckdb)
 library(dplyr)
 library(stringr)
-library(readr)
 
-# 1. Leer datos crudos desde DuckDB
+message("[i] Iniciando procesamiento de metadatos, tags y colecciones...")
+
+# 1. Conexión a la base de datos DuckDB
 con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb")
-df_raw <- dbReadTable(con, "acervo_editorial")
+df <- dbReadTable(con, "acervo_enriquecido")
 
-message("[i] Iniciando procesamiento NLP y depuración de colecciones...")
+# --- SANITIZACIÓN ANTI-ERT Y CARACTERES INVISIBLES ---
+limpiar_cadena_corrupta <- function(txt) {
+  if (is.null(txt) || is.na(txt)) return(txt)
+  txt <- as.character(txt)
+  txt <- gsub("[\\v\\r\\n\\t\\f\\p{C}]", " ", txt, perl = TRUE)
+  txt <- gsub("(?i)\\s*ert\\{\\}\\s*", " ", txt, perl = TRUE)
+  return(trimws(gsub("\\s+", " ", txt)))
+}
 
-# 2. Enriquecimiento, reglas NLP y corrección de colecciones
-df_enriquecido <- df_raw %>%
-  mutate(
-    # REGLA DE CORRECCIÓN: Separar 'Manuales y Guías' de 'Cuadernos de Divulgación'
-    coleccion = case_when(
-      str_detect(tolower(coalesce(titulo, "")), "manual|guía|guia|taller|didáctic|didactic") ~ "Manuales y Guías Didácticas",
-      TRUE ~ coleccion
-    ),
+cols_char <- names(df)[sapply(df, is.character)]
+for (col in cols_char) {
+  df[[col]] <- sapply(df[[col]], limpiar_cadena_corrupta, USE.NAMES = FALSE)
+}
+# -----------------------------------------------------
 
-    # Asignación de Eje Temático por minería de texto
-    eje_tematico = case_when(
-      str_detect(tolower(coalesce(titulo, "")), "paridad|género|mujeres|violencia|politica") ~ "Paridad de Género y DDHH",
-      str_detect(tolower(coalesce(titulo, "")), "voto|electoral|elecciones|partidos|sistema") ~ "Sistemas y Procesos Electorales",
-      str_detect(tolower(coalesce(titulo, "")), "transparencia|rendición|cuentas|fiscalización") ~ "Transparencia y Rendición de Cuentas",
-      str_detect(tolower(coalesce(titulo, "")), "infancia|niñez|juventud|educación|didáctic") ~ "Educación Cívica e Infancias",
-      TRUE ~ "Cultura Democrática y Ciudadanía"
-    ),
+# 2. Identificación dinámica de la columna de formato
+col_formato_vec <- grep("formato|tipo|extension|recurso", colnames(df), value = TRUE, ignore.case = TRUE)
 
-    # Asignación de Palabras Clave (#Keywords)
-    palabras_clave = case_when(
-      str_detect(tolower(coalesce(titulo, "")), "paridad|género|mujeres") ~ "INE, Paridad, DerechosHumanos, Igualdad",
-      str_detect(tolower(coalesce(titulo, "")), "voto|elecciones") ~ "INE, Voto, Elecciones, Democracia",
-      str_detect(tolower(coalesce(titulo, "")), "transparencia") ~ "INE, Transparencia, RendicionDeCuentas",
-      TRUE ~ "INE, CulturaDemocrática, Ciudadanía"
-    )
-  )
+if (length(col_formato_vec) > 0) {
+  col_formato <- col_formato_vec[1]
+  message(sprintf("[i] Columna de formato identificada: '%s'", col_formato))
+} else {
+  col_formato <- "formato"
+  df$formato <- "PDF" # Columna por defecto si no existía
+  message("[!] No se detectó columna de formato; se creó 'formato' con valor por defecto 'PDF'.")
+}
 
-# 3. Guardar dataset enriquecido en DuckDB
-dbWriteTable(con, "acervo_enriquecido", df_enriquecido, overwrite = TRUE)
+# 3. Depuración: Eliminar material audiovisual mal ubicado en Cuadernos de Divulgación
+df <- df %>%
+  filter(!(
+    str_detect(str_to_lower(coalesce(coleccion, "")), "cuadernos de divulgación") &
+      str_detect(str_to_lower(coalesce(.data[[col_formato]], "")), "video|audiovisual")
+  ))
+
+# 4. Renombrar obras con versión EPUB
+es_epub <- str_detect(str_to_lower(coalesce(df[[col_formato]], "")), "epub")
+ya_tiene_suffix <- str_detect(str_to_lower(coalesce(df$titulo, "")), "\\(versión epub\\)")
+
+df$titulo <- ifelse(es_epub & !ya_tiene_suffix, paste0(df$titulo, " (versión epub)"), df$titulo)
+
+# 5. Asignación de Nombres a Videos de Conferencias Magistrales
+es_conf_video <- str_detect(str_to_lower(coalesce(df$coleccion, "")), "conferencias magistrales") &
+  str_detect(str_to_lower(coalesce(df[[col_formato]], "")), "video|audiovisual")
+
+df$titulo[es_conf_video] <- paste0("Conferencia Magistral: ", str_replace_all(df$titulo[es_conf_video], "(?i)video|conferencia", ""))
+
+# 6. Generación de Tags Temáticos y de Edad (Sin Tag "INE")
+generar_tags <- function(coleccion, titulo, segmento_edad, valor_formato) {
+  tags <- c()
+  col_lower <- str_to_lower(coalesce(coleccion, ""))
+  tit_lower <- str_to_lower(coalesce(titulo, ""))
+  fmt_lower <- str_to_lower(coalesce(valor_formato, ""))
+
+  # Tags por Edad en Colección Árbol
+  if (str_detect(col_lower, "árbol|arbol")) {
+    if (str_detect(coalesce(segmento_edad, ""), "10|13|16") || str_detect(tit_lower, "adolescente")) {
+      tags <- c(tags, "Adolescentes")
+    } else {
+      tags <- c(tags, "Infantil")
+    }
+  }
+
+  # Tags Temáticos por palabras clave
+  if (str_detect(tit_lower, "democracia|democrátic")) tags <- c(tags, "Democracia")
+  if (str_detect(tit_lower, "elección|electoral|voto")) tags <- c(tags, "Elecciones")
+  if (str_detect(tit_lower, "género|paridad|mujer")) tags <- c(tags, "Paridad de Género")
+  if (str_detect(tit_lower, "justicia|tribunal|tepjf")) tags <- c(tags, "Justicia Electoral")
+  if (str_detect(tit_lower, "gobernanza|política")) tags <- c(tags, "Cultura Política")
+  if (str_detect(tit_lower, "partido|militan")) tags <- c(tags, "Partidos Políticos")
+  if (str_detect(tit_lower, "participación|ciudadan")) tags <- c(tags, "Participación Ciudadana")
+  if (str_detect(fmt_lower, "video|audiovisual")) tags <- c(tags, "Recurso Audiovisual")
+
+  if (length(tags) == 0) tags <- c("Publicación Oficial")
+  return(paste(unique(tags), collapse = ";"))
+}
+
+# Aplicación de la función generadora de tags
+df$tags_cadena <- mapply(
+  generar_tags,
+  df$coleccion,
+  df$titulo,
+  if ("segmento_edad" %in% colnames(df)) df$segmento_edad else NA_character_,
+  df[[col_formato]]
+)
+
+# 7. Sobrescribir la base de datos DuckDB
+dbWriteTable(con, "acervo_enriquecido", df, overwrite = TRUE)
 dbDisconnect(con, shutdown = TRUE)
 
-message("[✓] Procesamiento NLP y reestructuración de colecciones completado.")
-
-# 1. Leer datos crudos desde DuckDB
-con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb")
-df_raw <- dbGetQuery(con, "SELECT * FROM acervo_editorial")
-
-message(sprintf("[i] Procesando sinopsis, ejes temáticos y palabras clave para %d obras...", nrow(df_raw)))
-
-# 2. Función de asignación de Eje Temático
-asignar_eje_tematico <- function(texto, coleccion) {
-  t <- tolower(paste(coalesce(texto, ""), coalesce(coleccion, "")))
-
-  if (str_detect(t, "género|mujer|paridad|violencia política|derechos humanos")) {
-    return("Paridad de Género y DDHH")
-  } else if (str_detect(t, "voto|sistem|comicio|elecci|casilla|distrit|partido")) {
-    return("Sistemas y Procesos Electorales")
-  } else if (str_detect(t, "transparen|fiscaliz|rendición|cuenta|corrup")) {
-    return("Transparencia y Rendición de Cuentas")
-  } else if (str_detect(t, "cuento|taller|árbol|juego|didáct|infan")) {
-    return("Educación Cívica e Infancias")
-  } else {
-    return("Cultura Democrática y Ciudadanía")
-  }
-}
-
-# 3. Función para generar Sinopsis Dinámica Corta
-generar_sinopsis <- function(titulo, descripcion, coleccion, tipo) {
-  desc_limpia <- str_squish(coalesce(descripcion, ""))
-
-  if (nchar(desc_limpia) > 40 && !str_detect(desc_limpia, "^http")) {
-    sinopsis <- str_trunc(desc_limpia, 220)
-  } else {
-    sinopsis <- sprintf("Obra perteneciente a la colección '%s' del INE. Presenta un análisis especializado en formato %s orientado a promover los valores de la cultura democrática y el debate político electoral.", coalesce(coleccion, "General"), coalesce(tipo, "Digital"))
-  }
-  return(sinopsis)
-}
-
-# 4. Función para extraer y asignar Palabras Clave (Keywords)
-extraer_palabras_clave <- function(texto_completo, coleccion) {
-  t <- tolower(paste(coalesce(texto_completo, ""), coalesce(coleccion, "")))
-  kw <- c()
-
-  # Diccionario semántico de keywords
-  if (str_detect(t, "voto|elecc|sufrag|casilla|comicio")) kw <- c(kw, "Voto", "Elecciones", "Procesos Electorales")
-  if (str_detect(t, "género|mujer|paridad|femin|violencia")) kw <- c(kw, "Paridad de Género", "Derechos Políticos", "Mujeres")
-  if (str_detect(t, "joven|juventud|niñ|infan|escuela|árbol|cuento")) kw <- c(kw, "Educación Cívica", "Infancias", "Participación Ciudadana")
-  if (str_detect(t, "transparen|fiscaliz|rendición|cuenta")) kw <- c(kw, "Transparencia", "Rendición de Cuentas", "Fiscalización")
-  if (str_detect(t, "derecho|fundamental|justicia|constituc")) kw <- c(kw, "Derechos Humanos", "Estado de Derecho", "Justicia")
-  if (str_detect(t, "digital|redes|medios|periodis|fake news")) kw <- c(kw, "Entorno Digital", "Libertad de Expresión", "Medios")
-  if (str_detect(t, "partido|candidat|campaña|sistema")) kw <- c(kw, "Partidos Políticos", "Campañas", "Democracia")
-
-  if (length(kw) == 0) kw <- c("Cultura Democrática", "INE", "Educación Cívica")
-
-  return(paste(unique(kw), collapse = ", "))
-}
-
-# 5. Enriquecimiento del dataset en orden correcto de variables
-df_enriquecido <- df_raw %>%
-  rowwise() %>%
-  mutate(
-    # Primero asignamos las columnas base
-    eje_tematico = asignar_eje_tematico(paste(titulo, descripcion), coleccion),
-    sinopsis = generar_sinopsis(titulo, descripcion, coleccion, tipo_recurso),
-    palabras_clave = extraer_palabras_clave(paste(titulo, descripcion), coleccion),
-
-    # Después creamos la columna de texto consolidado para la búsqueda
-    texto_busqueda = tolower(paste(
-      coalesce(titulo, ""),
-      coalesce(descripcion, ""),
-      coalesce(coleccion, ""),
-      coalesce(eje_tematico, ""),
-      coalesce(palabras_clave, ""),
-      coalesce(sinopsis, "")
-    ))
-  ) %>%
-  ungroup()
-
-# 6. Persistencia en DuckDB y CSV
-dbWriteTable(con, "acervo_enriquecido", df_enriquecido, overwrite = TRUE)
-write_csv(df_enriquecido, "data/acervo_editorial_enriquecido.csv")
-
-message("\n[✓] Proceso NLP finalizado exitosamente.")
-message("Sinopsis, Ejes Temáticos y Palabras Clave almacenados en la tabla 'acervo_enriquecido' de DuckDB.")
-
-dbDisconnect(con, shutdown = TRUE)
+message("[✓] Base de datos 'acervo_enriquecido' reestructurada y guardada exitosamente en DuckDB.")
