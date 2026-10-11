@@ -12,13 +12,12 @@ library(dplyr)
 library(stringr)
 library(plotly)
 
-# REGISTRO DE RUTA DE RECURSOS ESTÁTICOS PARA IMÁGENES DE PORTADAS
 if (dir.exists("www/portadas")) {
   addResourcePath(prefix = "portadas", directoryPath = "www/portadas")
 }
 
 # ------------------------------------------------------------------------------
-# FUNCIÓN AUXILIAR DE SANITIZACIÓN DE TEXTO
+# FUNCIONES AUXILIARES DE SANITIZACIÓN Y FORMATEO
 # ------------------------------------------------------------------------------
 limpiar_cadena_corrupta <- function(txt) {
   if (is.null(txt) || is.na(txt)) return("")
@@ -26,6 +25,74 @@ limpiar_cadena_corrupta <- function(txt) {
   res <- gsub("[\\v\\r\\n\\t\\f\\p{C}]", " ", res, perl = TRUE)
   res <- gsub("(?i)\\s*ert\\{\\}\\s*", " ", res, perl = TRUE)
   return(trimws(gsub("\\s+", " ", res)))
+}
+
+formatear_markdown_resumen <- function(txt) {
+  if (is.null(txt) || is.na(txt) || nchar(trimws(txt)) == 0) return("Resumen no disponible.")
+
+  res <- as.character(txt)
+
+  # 1. Limpieza de etiquetas y marcas
+  res <- gsub("(?i)ert\\{\\}", "", res, perl = TRUE)
+  res <- gsub("(?i)^\\s*OBRA:\\s*.*?(\r?\n)+", "", res, perl = TRUE)
+  res <- gsub("\\*\\*", "", res)
+  res <- gsub("__", "", res)
+  res <- gsub("(?i)<\\/?(b|strong)[^>]*>", "", res, perl = TRUE)
+
+  # 2. Reemplazar saltos de línea
+  res <- gsub("\r\n", "\n", res)
+
+  # 3. Formatear las 6 secciones principales como Encabezados Markdown (###)
+  patron_secciones <- "(?i)(?<=\\s|\\.|^|:)\\s*(#+\\s*)?(I|II|III|IV|V|VI)[\\.\\:-]\\s*"
+  res <- gsub(patron_secciones, "\n\n### \\2. ", res, perl = TRUE)
+
+  # 4. Encabezado principal 'RESUMEN EJECUTIVO'
+  res <- gsub("(?i)^\\s*(#+\\s*)?RESUMEN EJECUTIVO\\s*", "### RESUMEN EJECUTIVO\n\n", res, perl = TRUE)
+  if (!str_detect(res, "(?i)^###\\s*RESUMEN EJECUTIVO")) {
+    res <- paste0("### RESUMEN EJECUTIVO\n\n", res)
+  }
+
+  # 5. Asegurar saltos dobles de párrafo (\n\n)
+  res <- gsub("(?<!\n)\n(?!\n)", "\n\n", res, perl = TRUE)
+  res <- gsub("\n{3,}", "\n\n", res)
+
+  return(trimws(res))
+}
+
+formatear_indice_vista <- function(txt) {
+  if (is.null(txt) || is.na(txt) || nchar(trimws(txt)) < 5) {
+    return("Índice temático no disponible para esta obra.")
+  }
+
+  res <- as.character(txt)
+
+  # 1. Eliminar 'ÍNDICE GENERAL', 'INDICE GENERAL', 'CONTENIDO', 'TABLA DE CONTENIDOS'
+  res <- gsub("(?i)^\\s*(#+\\s*)?(ÍNDICE GENERAL|INDICE GENERAL|CONTENIDO|TABLA DE CONTENIDOS)\\s*[\r\n]*", "", res, perl = TRUE)
+  res <- gsub("(?i)\n\\s*(#+\\s*)?(ÍNDICE GENERAL|INDICE GENERAL|CONTENIDO|TABLA DE CONTENIDOS)\\s*[\r\n]*", "\n", res, perl = TRUE)
+
+  # 2. Dividir por líneas y limpiar
+  lineas <- unlist(strsplit(res, "\n"))
+  lineas <- trimws(lineas)
+  lineas <- lineas[nzchar(lineas)]
+
+  # 3. Procesar cada línea agregando tres puntos (...) antes Y después del número
+  lineas_procesadas <- sapply(lineas, function(l) {
+    l <- gsub("^[*\\-\\•\\>\\#]+\\s*", "", l)
+    l <- gsub("\\*\\*", "", l)
+
+    # Agregar ' ... ' entre título y número, y ' ...' después del número de página
+    if (str_detect(l, "\\d+$")) {
+      l <- gsub("\\s*\\.{2,}\\s*(\\d+)$", " ... \\1 ...", l, perl = TRUE)
+      l <- gsub("(?<=[^\\.\\s])\\s+(\\d+)$", " ... \\1 ...", l, perl = TRUE)
+    } else if (str_detect(l, "\\d+\\s*\\.{0,2}$")) {
+      l <- gsub("(\\d+)\\s*\\.{0,2}$", "\\1 ...", l, perl = TRUE)
+    }
+
+    return(l)
+  }, USE.NAMES = FALSE)
+
+  # 4. Unir con SALTO DE LÍNEA SENCILLO (\n) para evitar espacio excesivo
+  return(paste(lineas_procesadas, collapse = "\n"))
 }
 
 # ------------------------------------------------------------------------------
@@ -45,13 +112,12 @@ if ("acervo_enriquecido" %in% dbListTables(con)) {
       eje_tematico = "Cultura Democrática y Ciudadanía",
       poblacion_objetivo = "Público General",
       sinopsis_real = descripcion,
-      palabras_clave = "INE, Cultura Democrática",
+      palabras_clave = "Cultura Democrática",
       ruta_portada = "portadas/portada_generica.jpg"
     )
 }
 dbDisconnect(con, shutdown = TRUE)
 
-# Normalizaciones defensivas de columnas
 if (!"url_recurso" %in% colnames(datos_acervo)) {
   if ("url_descarga" %in% colnames(datos_acervo)) {
     datos_acervo$url_recurso <- datos_acervo$url_descarga
@@ -70,13 +136,11 @@ if (!"tipo_recurso" %in% colnames(datos_acervo)) {
   }
 }
 
-# Aplicar sanitización a la base de datos cargada
-cols_char <- names(datos_acervo)[sapply(datos_acervo, is.character)]
+cols_char <- setdiff(names(datos_acervo)[sapply(datos_acervo, is.character)], c("resumen_ejecutivo_3p", "indice_tematico"))
 for (col in cols_char) {
   datos_acervo[[col]] <- sapply(datos_acervo[[col]], limpiar_cadena_corrupta, USE.NAMES = FALSE)
 }
 
-# Filtrar ficha genérica de la sección
 datos_acervo <- datos_acervo %>%
   filter(!str_detect(str_to_lower(coalesce(url_recurso, "")), "cuadernos-divulgacion-manuales-guias/?$"))
 
@@ -89,8 +153,8 @@ if (!"ruta_portada" %in% colnames(datos_acervo)) {
 }
 
 opciones_coleccion <- c("Todas", sort(unique(na.omit(datos_acervo$coleccion[datos_acervo$coleccion != ""]))))
-opciones_eje       <- c("Todos", sort(unique(na.omit(datos_acervo$eje_tematico[datos_acervo$eje_tematico != ""]))))
-opciones_tipo      <- c("Todos", sort(unique(na.omit(datos_acervo$tipo_recurso[datos_acervo$tipo_recurso != ""]))))
+opciones_eje        <- c("Todos", sort(unique(na.omit(datos_acervo$eje_tematico[datos_acervo$eje_tematico != ""]))))
+opciones_tipo       <- c("Todos", sort(unique(na.omit(datos_acervo$tipo_recurso[datos_acervo$tipo_recurso != ""]))))
 
 # ------------------------------------------------------------------------------
 # 2. INTERFAZ DE USUARIO (UI)
@@ -103,6 +167,50 @@ ui <- page_navbar(
     primary = "#1D3557",
     secondary = "#D81B60",
     `enable-shadows` = TRUE
+  ),
+
+  header = tags$head(
+    tags$style(HTML("
+      /* TODO EL TEXTO DEL RESUMEN EJECUTIVO EN ARIAL */
+      .resumen-markdown-body,
+      .resumen-markdown-body * {
+        font-family: 'Arial', sans-serif !important;
+        font-size: 1.02rem !important;
+        line-height: 1.85 !important;
+        color: #2c3e50 !important;
+        font-weight: 400 !important;
+      }
+
+      /* ENCABEZADOS DEL RESUMEN EJECUTIVO EN ARIAL NEGRITAS */
+      .resumen-markdown-body h3,
+      .resumen-markdown-body h3 * {
+        font-family: 'Arial', sans-serif !important;
+        color: #1D3557 !important;
+        font-weight: 700 !important;
+        font-size: 1.25rem !important;
+        margin-top: 2rem !important;
+        margin-bottom: 1rem !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        padding-bottom: 0.4rem !important;
+        display: block !important;
+      }
+
+      .resumen-markdown-body p {
+        margin-bottom: 1.4rem !important;
+        text-align: justify !important;
+        display: block !important;
+      }
+
+      /* TODO EL TEXTO DEL ÍNDICE EN ARIAL CON ITÁLICAS Y SALTO SENCILLO COMPACTO */
+      .indice-body,
+      .indice-body * {
+        font-family: 'Arial', sans-serif !important;
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+        color: #1e293b !important;
+        font-style: italic !important;
+      }
+    "))
   ),
 
   nav_panel(
@@ -202,7 +310,7 @@ ui <- page_navbar(
       tags$ul(
         tags$li(strong("Stack Tecnológico:"), " R, R Shiny, DuckDB, bslib, DT, rvest, plotly."),
         tags$li(strong("Ingeniería de Datos:"), " Web scraping multisección con rotación de User-Agents y etiquetado NLP."),
-        tags$li(strong("Costo de Infraestructura:"), " $0 USD.")
+        tags$li(strong("Costo de Infraestructura:"), " Creado con software de código abierto (open source) | Licencia Pública General de GNU (GPL)")
       )
     )
   )
@@ -285,14 +393,13 @@ server <- function(input, output, session) {
     tarjetas <- lapply(seq_len(limite), function(i_idx) {
       item <- df[i_idx, ]
 
-      # Sanitización al vuelo para evitar remanentes de ert{} o caracteres invisibles
       coleccion_limpia <- limpiar_cadena_corrupta(item$coleccion)
-      eje_limpio       <- limpiar_cadena_corrupta(item$eje_tematico)
+      eje_limpio        <- limpiar_cadena_corrupta(item$eje_tematico)
       titulo_limpio    <- limpiar_cadena_corrupta(item$titulo)
 
       badge_color <- if(str_detect(eje_limpio, "Paridad")) "bg-danger" else "bg-dark"
 
-      kw_raw <- coalesce(item$palabras_clave, "INE, Cultura Democrática")
+      kw_raw <- coalesce(item$palabras_clave, "Cultura Democrática")
       tags_kw <- unlist(strsplit(kw_raw, ",\\s*"))
 
       sinopsis_txt <- ifelse(
@@ -310,7 +417,7 @@ server <- function(input, output, session) {
       btn_resumen_3p <- if (tiene_resumen_3p) {
         actionButton(
           inputId = paste0("btn_resumen_", item$id_obra),
-          label = " Resumen (IA)",
+          label = " Resumen e Índice (IA)",
           icon = icon("brain"),
           class = "btn-outline-info btn-sm w-100 rounded-pill fw-bold mb-2"
         )
@@ -376,7 +483,9 @@ server <- function(input, output, session) {
     div(class = "row", tarjetas)
   })
 
-  # MODAL CON FORMATO DE PÁRRAFOS Y SALTO DE LÍNEA TRAS EL ENCABEZADO
+  # ============================================================================
+  # MODAL CON PESTAÑAS (RESUMEN EJECUTIVO Y ÍNDICE EN ARIAL)
+  # ============================================================================
   observe({
     df <- datos_filtrados()
     if (is.null(df) || nrow(df) == 0 || !"resumen_ejecutivo_3p" %in% colnames(df)) return()
@@ -387,28 +496,50 @@ server <- function(input, output, session) {
 
       observeEvent(input[[btn_id]], {
         resumen_raw <- coalesce(item$resumen_ejecutivo_3p, "Resumen no disponible.")
+        resumen_markdown <- formatear_markdown_resumen(resumen_raw)
 
-        # Limpieza de prefijos OBRA y ert{}
-        resumen_limpio <- str_replace(resumen_raw, "(?i)^\\s*OBRA:\\s*.*?(\r?\n)+", "")
-        resumen_limpio <- limpiar_cadena_corrupta(resumen_limpio)
+        titulo_obra_limpio <- limpiar_cadena_corrupta(item$titulo)
+        indice_raw <- if ("indice_tematico" %in% colnames(item) && !is.na(item$indice_tematico)) {
+          item$indice_tematico
+        } else {
+          ""
+        }
 
-        # Asegurar salto de línea tras el encabezado 'RESUMEN EJECUTIVO'
-        resumen_limpio <- str_replace(resumen_limpio, "(?i)^RESUMEN EJECUTIVO\\s*", "RESUMEN EJECUTIVO\n\n")
+        indice_formatted <- formatear_indice_vista(indice_raw)
 
         showModal(modalDialog(
-          title = tagList(icon("brain"), " Resumen Ejecutivo (elaborado por IA)"),
+          title = tagList(icon("book-open"), " Análisis Detallado de la Obra"),
           size = "l",
           easyClose = TRUE,
           footer = modalButton("Cerrar"),
 
           tags$div(
-            style = "max-height: 70vh; overflow-y: auto; padding: 15px; background: #fafafa; border-radius: 8px;",
-            tags$h5(limpiar_cadena_corrupta(item$titulo), style = "color: #1D3557; font-weight: 700; margin-bottom: 5px;"),
-            tags$p(class = "text-muted small mb-3", paste("Colección:", limpiar_cadena_corrupta(item$coleccion), "| Eje:", limpiar_cadena_corrupta(item$eje_tematico))),
-            hr(),
-            tags$div(
-              style = "white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6; color: #334155;",
-              resumen_limpio
+            class = "mb-3 pb-2 border-bottom",
+            tags$h5(titulo_obra_limpio, style = "color: #1D3557; font-weight: 700; margin-bottom: 4px;"),
+            tags$p(class = "text-muted small mb-0", paste("Colección:", limpiar_cadena_corrupta(item$coleccion), "| Eje:", limpiar_cadena_corrupta(item$eje_tematico)))
+          ),
+
+          navset_tab(
+            nav_panel(
+              title = "Resumen Ejecutivo (IA)",
+              icon = icon("brain"),
+              tags$div(
+                class = "resumen-markdown-body",
+                style = "max-height: 58vh; overflow-y: auto; padding: 22px; background: #fafafa; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px;",
+                shiny::markdown(resumen_markdown)
+              )
+            ),
+            nav_panel(
+              title = "Índice",
+              icon = icon("list-check"),
+              tags$div(
+                class = "indice-body",
+                style = "max-height: 58vh; overflow-y: auto; padding: 22px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 10px;",
+                tags$div(
+                  style = "white-space: pre-wrap; font-size: 0.95rem; line-height: 1.5; color: #1e293b;",
+                  shiny::markdown(indice_formatted)
+                )
+              )
             )
           )
         ))
@@ -418,10 +549,11 @@ server <- function(input, output, session) {
 
   output$tabla_acervo <- renderDT({
     df_tabla <- datos_filtrados() %>%
+      select(`Colección` = coleccion, `Título` = titulo, `Eje Temático` = eje_tematico, `Tipo` = tipo_recurso, `Acción` = url_recurso) %>%
       mutate(
-        Enlace = paste0("<a href='", url_recurso, "' target='_blank' class='btn btn-sm btn-dark rounded-pill'><i class='fa-solid fa-download'></i> Leer</a>")
+        Enlace = paste0("<a href='", `Acción`, "' target='_blank' class='btn btn-sm btn-dark rounded-pill'><i class='fa-solid fa-download'></i> Leer</a>")
       ) %>%
-      select(`Colección` = coleccion, `Título` = titulo, `Eje Temático` = eje_tematico, `Tipo` = tipo_recurso, `Acción` = Enlace)
+      select(`Colección`, `Título`, `Eje Temático`, `Tipo`, `Acción` = Enlace)
 
     datatable(
       df_tabla, escape = FALSE, selection = "none",
