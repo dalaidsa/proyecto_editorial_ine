@@ -1,0 +1,1230 @@
+================================================================================
+            INFORME DE OBRAS CON RESUMEN EJECUTIVO COMPLETADO
+                     INSTITUTO NACIONAL ELECTORAL (INE)
+================================================================================
+Fecha de generación          : 2026-10-10 00:13:51.945447
+Total de obras en catálogo  : 356
+Obras con resumen completado : 203 (57.0%)
+Obras pendientes por procesar: 153
+================================================================================
+
+LISTADO DETALLADO DE OBRAS COMPLETADAS:
+--------------------------------------------------------------------------------
+[001] ID Obra  : 1
+      Título   : MANUALES Y GUÍAS
+      Colección: Manuales y Guías Didácticas
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,682 palabras | 25,382 caracteres
+--------------------------------------------------------------------------------
+[002] ID Obra  : 2
+      Título   : Principios y valores de la democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,892 palabras | 26,586 caracteres
+--------------------------------------------------------------------------------
+[003] ID Obra  : 3
+      Título   : La cultura política democrática
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,608 palabras | 24,517 caracteres
+--------------------------------------------------------------------------------
+[004] ID Obra  : 4
+      Título   : La democracia como forma de gobierno
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,886 palabras | 26,626 caracteres
+--------------------------------------------------------------------------------
+[005] ID Obra  : 5
+      Título   : La participación ciudadana en la democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,352 palabras | 23,054 caracteres
+--------------------------------------------------------------------------------
+[006] ID Obra  : 6
+      Título   : Elecciones y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,721 palabras | 25,616 caracteres
+--------------------------------------------------------------------------------
+[007] ID Obra  : 7
+      Título   : Gobernabilidad y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,541 palabras | 24,955 caracteres
+--------------------------------------------------------------------------------
+[008] ID Obra  : 8
+      Título   : Sistemas electorales y de partidos
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,181 palabras | 21,951 caracteres
+--------------------------------------------------------------------------------
+[009] ID Obra  : 9
+      Título   : Partidos políticos y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,389 palabras | 23,706 caracteres
+--------------------------------------------------------------------------------
+[010] ID Obra  : 10
+      Título   : Esferas de la democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,712 palabras | 25,408 caracteres
+--------------------------------------------------------------------------------
+[011] ID Obra  : 11
+      Título   : Tolerancia y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,776 palabras | 26,038 caracteres
+--------------------------------------------------------------------------------
+[012] ID Obra  : 12
+      Título   : Oposición y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,591 palabras | 24,374 caracteres
+--------------------------------------------------------------------------------
+[013] ID Obra  : 13
+      Título   : Estado de derecho y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,708 palabras | 24,849 caracteres
+--------------------------------------------------------------------------------
+[014] ID Obra  : 14
+      Título   : Diálogo y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,935 palabras | 27,322 caracteres
+--------------------------------------------------------------------------------
+[015] ID Obra  : 15
+      Título   : Democratización y liberalización
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,879 palabras | 27,360 caracteres
+--------------------------------------------------------------------------------
+[016] ID Obra  : 16
+      Título   : Consulta popular y democracia directa
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,656 palabras | 24,945 caracteres
+--------------------------------------------------------------------------------
+[017] ID Obra  : 17
+      Título   : Democracia y educación
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,709 palabras | 25,165 caracteres
+--------------------------------------------------------------------------------
+[018] ID Obra  : 18
+      Título   : Federalismo, gobiernos locales y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,873 palabras | 27,103 caracteres
+--------------------------------------------------------------------------------
+[019] ID Obra  : 19
+      Título   : Libertad y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,656 palabras | 24,794 caracteres
+--------------------------------------------------------------------------------
+[020] ID Obra  : 20
+      Título   : Gobiernos y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,626 palabras | 25,103 caracteres
+--------------------------------------------------------------------------------
+[021] ID Obra  : 21
+      Título   : Sistemas parlamentario, presidencial y semipresidencial
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,705 palabras | 26,360 caracteres
+--------------------------------------------------------------------------------
+[022] ID Obra  : 22
+      Título   : Rendición de cuentas y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Transparencia y Rendición de Cuentas
+      Métricas : 3,387 palabras | 23,193 caracteres
+--------------------------------------------------------------------------------
+[023] ID Obra  : 23
+      Título   : Concepciones de la democracia y justicia electoral
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,536 palabras | 24,466 caracteres
+--------------------------------------------------------------------------------
+[024] ID Obra  : 24
+      Título   : Género y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,645 palabras | 24,739 caracteres
+--------------------------------------------------------------------------------
+[025] ID Obra  : 25
+      Título   : Comunicación y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,565 palabras | 24,604 caracteres
+--------------------------------------------------------------------------------
+[026] ID Obra  : 26
+      Título   : Democracia y (cultura de la) legalidad
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,089 palabras | 27,365 caracteres
+--------------------------------------------------------------------------------
+[027] ID Obra  : 27
+      Título   : Multiculturalismo y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,888 palabras | 27,159 caracteres
+--------------------------------------------------------------------------------
+[028] ID Obra  : 28
+      Título   : Ciudadanía y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,502 palabras | 23,796 caracteres
+--------------------------------------------------------------------------------
+[029] ID Obra  : 29
+      Título   : Democracia y formación ciudadana
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,734 palabras | 25,630 caracteres
+--------------------------------------------------------------------------------
+[030] ID Obra  : 30
+      Título   : Sufragio extraterritorial y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,685 palabras | 25,610 caracteres
+--------------------------------------------------------------------------------
+[031] ID Obra  : 31
+      Título   : Políticas públicas y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,268 palabras | 29,076 caracteres
+--------------------------------------------------------------------------------
+[032] ID Obra  : 32
+      Título   : Derechos fundamentales y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,036 palabras | 27,653 caracteres
+--------------------------------------------------------------------------------
+[033] ID Obra  : 33
+      Título   : Formación ciudadana en México
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,091 palabras | 27,993 caracteres
+--------------------------------------------------------------------------------
+[034] ID Obra  : 34
+      Título   : Democracia y Organismos Internacionales
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,134 palabras | 29,302 caracteres
+--------------------------------------------------------------------------------
+[035] ID Obra  : 35
+      Título   : Democracia y medios en México: el papel del periodismo
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,020 palabras | 27,400 caracteres
+--------------------------------------------------------------------------------
+[036] ID Obra  : 36
+      Título   : Democracia y burocracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,013 palabras | 28,080 caracteres
+--------------------------------------------------------------------------------
+[037] ID Obra  : 37
+      Título   : Democracia, populismo y elitismo
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,002 palabras | 20,619 caracteres
+--------------------------------------------------------------------------------
+[038] ID Obra  : 38
+      Título   : Los Derechos humanos y la democracia en el sistema interamericano
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,339 palabras | 29,812 caracteres
+--------------------------------------------------------------------------------
+[039] ID Obra  : 39
+      Título   : Mujeres y derechos políticos en México: una introducción conceptual
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,019 palabras | 27,750 caracteres
+--------------------------------------------------------------------------------
+[040] ID Obra  : 40
+      Título   : Democracia y gobiernos municipales en México: de la política a las políticas
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,844 palabras | 26,833 caracteres
+--------------------------------------------------------------------------------
+[041] ID Obra  : 41
+      Título   : Democracia y género. Historia del debate público en torno al sufragio femenino en México
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,233 palabras | 28,734 caracteres
+--------------------------------------------------------------------------------
+[042] ID Obra  : 42
+      Título   : Democracia, privacidad y protección de datos personales
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,933 palabras | 26,975 caracteres
+--------------------------------------------------------------------------------
+[043] ID Obra  : 43
+      Título   : Los debates electorales en la democracia contemporánea. Apuntes para analizar su presencia, función y evolución en las campañas
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,654 palabras | 31,680 caracteres
+--------------------------------------------------------------------------------
+[044] ID Obra  : 44
+      Título   : Democracia y federalismo
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,564 palabras | 24,883 caracteres
+--------------------------------------------------------------------------------
+[045] ID Obra  : 45
+      Título   : Poder Judicial y democracia
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,883 palabras | 26,706 caracteres
+--------------------------------------------------------------------------------
+[046] ID Obra  : 46
+      Título   : Democracia y discriminación
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,675 palabras | 26,334 caracteres
+--------------------------------------------------------------------------------
+[047] ID Obra  : 47
+      Título   : Democracia y confianza
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,975 palabras | 27,143 caracteres
+--------------------------------------------------------------------------------
+[048] ID Obra  : 48
+      Título   : Cambio cilmático, crisis ambiental y democracia. Reflexiones sobre gobernanza ambiental en el Antropoceno
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,690 palabras | 26,222 caracteres
+--------------------------------------------------------------------------------
+[049] ID Obra  : 49
+      Título   : Democracia, poderes fácticos y regímenes de gobernanza criminal
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,680 palabras | 25,786 caracteres
+--------------------------------------------------------------------------------
+[050] ID Obra  : 50
+      Título   : Democracia y entorno digital: ¿una nueva forma de ejercer la ciudadanía?
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,481 palabras | 25,152 caracteres
+--------------------------------------------------------------------------------
+[051] ID Obra  : 51
+      Título   : Democracia, democratización y liberalización: ciclos de expansión y reversión a nivel global
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 2,894 palabras | 20,632 caracteres
+--------------------------------------------------------------------------------
+[052] ID Obra  : 52
+      Título   : Consulta el Aviso de privacidad (PDF)
+      Colección: Cuadernos de Divulgación de la Cultura Democrática
+      Eje      : Transparencia y Rendición de Cuentas
+      Métricas : 4,211 palabras | 29,082 caracteres
+--------------------------------------------------------------------------------
+[053] ID Obra  : 135
+      Título   : Guía de participación para niñas y niños
+      Colección: Manuales y Guías Didácticas
+      Eje      : Educación Cívica e Infancias
+      Métricas : 3,860 palabras | 26,644 caracteres
+--------------------------------------------------------------------------------
+[054] ID Obra  : 136
+      Título   : Guía de participación para adolescentes
+      Colección: Manuales y Guías Didácticas
+      Eje      : Educación Cívica e Infancias
+      Métricas : 5,203 palabras | 36,530 caracteres
+--------------------------------------------------------------------------------
+[055] ID Obra  : 137
+      Título   : Tomo I. Identidad y Participación de las Mujeres de Pueblos Indígenas
+      Colección: Manuales y Guías Didácticas
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,633 palabras | 25,636 caracteres
+--------------------------------------------------------------------------------
+[056] ID Obra  : 138
+      Título   : Tomo II. Derechos de las Mujeres de Pueblos Indígenas: Agendas y Liderazgos
+      Colección: Manuales y Guías Didácticas
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,014 palabras | 28,634 caracteres
+--------------------------------------------------------------------------------
+[057] ID Obra  : 139
+      Título   : Guía para medios de comunicación y partidos políticos: hacia una cobertura de los procesos electorales libre de discriminación
+      Colección: Manuales y Guías Didácticas
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,464 palabras | 31,312 caracteres
+--------------------------------------------------------------------------------
+[058] ID Obra  : 140
+      Título   : Guía para la acción pública. Elecciones sin discriminación. Participar y votar en igualdad
+      Colección: Manuales y Guías Didácticas
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,512 palabras | 31,995 caracteres
+--------------------------------------------------------------------------------
+[059] ID Obra  : 141
+      Título   : Guía para la acción pública. Elecciones sin discriminación: Proceso Electoral Federal 2017-2018. Participar y organizar el proceso electoral
+      Colección: Manuales y Guías Didácticas
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,011 palabras | 28,071 caracteres
+--------------------------------------------------------------------------------
+[060] ID Obra  : 142
+      Título   : Guía para la acción pública. Elecciones sin discriminación: Proceso Electoral Federal 2017-2018. Participar y votar el día de la elección
+      Colección: Manuales y Guías Didácticas
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,391 palabras | 23,599 caracteres
+--------------------------------------------------------------------------------
+[061] ID Obra  : 143
+      Título   : Guía para la acción pública. Elecciones sin discriminación: Proceso Electoral Federal 2017-2018. Participar y opinar. Derechos de las niñas, niños y adolescentes. Tomo 4
+      Colección: Manuales y Guías Didácticas
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,224 palabras | 28,933 caracteres
+--------------------------------------------------------------------------------
+[062] ID Obra  : 144
+      Título   : La agenda pendiente en materia de representación y participación política: voces de los pueblos y comunidades indígenas de México
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,181 palabras | 30,904 caracteres
+--------------------------------------------------------------------------------
+[063] ID Obra  : 145
+      Título   : Estrategia Nacional de Cultura Cívica 2017-2023
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,059 palabras | 29,131 caracteres
+--------------------------------------------------------------------------------
+[064] ID Obra  : 146
+      Título   : Estrategia Nacional de Cultura Cívica 2017-2023
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,312 palabras | 23,307 caracteres
+--------------------------------------------------------------------------------
+[065] ID Obra  : 147
+      Título   : Informe país sobre la calidad de la ciudadanía en México
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,132 palabras | 29,776 caracteres
+--------------------------------------------------------------------------------
+[066] ID Obra  : 148
+      Título   : Informe país sobre la calidad de la ciudadanía en México. Resumen ejecutivo
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,489 palabras | 24,587 caracteres
+--------------------------------------------------------------------------------
+[067] ID Obra  : 149
+      Título   : La modernización política en México desde la perspectiva de sus actores
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,121 palabras | 29,720 caracteres
+--------------------------------------------------------------------------------
+[068] ID Obra  : 150
+      Título   : Buenas prácticas de los Organismos Públicos Locales (OPL) en el proceso electoral concurrente 2017-2018 para garantizar el cumplimiento del principio de paridad y las acciones afirmativas
+      Colección: Obras Institucionales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,931 palabras | 28,075 caracteres
+--------------------------------------------------------------------------------
+[069] ID Obra  : 151
+      Título   : Memoria de la Distritación Electoral Nacional 2014-2017
+      Colección: Obras Institucionales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,929 palabras | 28,138 caracteres
+--------------------------------------------------------------------------------
+[070] ID Obra  : 152
+      Título   : La escucha y el cuidado: hacia nuevas formas de vinculación con niñas, niños y jóvenes
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,424 palabras | 23,069 caracteres
+--------------------------------------------------------------------------------
+[071] ID Obra  : 153
+      Título   : La confianza y la participación de la juventud en la democracia
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,519 palabras | 24,590 caracteres
+--------------------------------------------------------------------------------
+[072] ID Obra  : 154
+      Título   : Reflexiones sobre la participación ciudadana en México: las elecciones de 2018
+      Colección: Obras Institucionales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,205 palabras | 21,928 caracteres
+--------------------------------------------------------------------------------
+[073] ID Obra  : 155
+      Título   : Guía para la prevención, atención, sanción y reparación integral de la violencia política contra las mujeres en razón de género del Instituto Nacional Electoral. Segunda edición
+      Colección: Manuales y Guías Didácticas
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,811 palabras | 26,370 caracteres
+--------------------------------------------------------------------------------
+[074] ID Obra  : 156
+      Título   : Experiencias y buenas prácticas en la observancia y aplicación del principio de paridad y acciones afirmativas. Proceso Electoral Federal y Concurrente 2020-2021
+      Colección: Obras Institucionales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,117 palabras | 29,003 caracteres
+--------------------------------------------------------------------------------
+[075] ID Obra  : 157
+      Título   : La reforma en materia de violencia política contra las mujeres en razón de género y su homologación a nivel local: avances y desafíos
+      Colección: Obras Institucionales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 5,050 palabras | 35,170 caracteres
+--------------------------------------------------------------------------------
+[076] ID Obra  : 158
+      Título   : ABC de la transparencia en el INE
+      Colección: Obras Institucionales
+      Eje      : Transparencia y Rendición de Cuentas
+      Métricas : 5,007 palabras | 34,872 caracteres
+--------------------------------------------------------------------------------
+[077] ID Obra  : 159
+      Título   : Glosario contra la desinformación
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,396 palabras | 32,399 caracteres
+--------------------------------------------------------------------------------
+[078] ID Obra  : 160
+      Título   : Testimonios de la ciudadanía sobre elecciones en contexto de pandemia. Proceso Electoral 2020-2021
+      Colección: Obras Institucionales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,602 palabras | 32,501 caracteres
+--------------------------------------------------------------------------------
+[079] ID Obra  : 161
+      Título   : Memoria de la Distritación Nacional 2021-2023
+      Colección: Obras Institucionales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,477 palabras | 25,229 caracteres
+--------------------------------------------------------------------------------
+[080] ID Obra  : 162
+      Título   : Diálogos sobre la igualdad sustantiva y la violencia política contra las mujeres en razón de género y su impacto en la democracia
+      Colección: Obras Institucionales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,129 palabras | 28,468 caracteres
+--------------------------------------------------------------------------------
+[081] ID Obra  : 163
+      Título   : Guía de auto-cuidado del INE para personas que brindan antención de primer contacto a mujeres que sobreviven a la violencia política contra las mujeres en razón de género (VPMRG)
+      Colección: Manuales y Guías Didácticas
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,800 palabras | 26,771 caracteres
+--------------------------------------------------------------------------------
+[082] ID Obra  : 164
+      Título   : ABC de la Protección de datos personales
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,107 palabras | 28,409 caracteres
+--------------------------------------------------------------------------------
+[083] ID Obra  : 165
+      Título   : Experiencias del voto de las personas en prisión, una visión internacional comparada
+      Colección: Obras Institucionales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,144 palabras | 30,256 caracteres
+--------------------------------------------------------------------------------
+[084] ID Obra  : 166
+      Título   : Experiences of incarcerated voting, an international comparative view
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,630 palabras | 32,108 caracteres
+--------------------------------------------------------------------------------
+[085] ID Obra  : 167
+      Título   : Análisis del fenómeno del abstencionismo en Baja California durante el Proceso Electoral Concurrente 2020-2021
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,177 palabras | 22,590 caracteres
+--------------------------------------------------------------------------------
+[086] ID Obra  : 168
+      Título   : Aprendizajes y obstáculos en el camino: paridad y acciones afirmativas en las elecciones concurrentes 2024
+      Colección: Obras Institucionales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,863 palabras | 27,306 caracteres
+--------------------------------------------------------------------------------
+[087] ID Obra  : 169
+      Título   : Memorias de la Red de Género de Consejeras INE Guanajuato del Proceso Federal 2020-2021
+      Colección: Obras Institucionales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,015 palabras | 27,769 caracteres
+--------------------------------------------------------------------------------
+[088] ID Obra  : 170
+      Título   : Tomo I
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,379 palabras | 30,538 caracteres
+--------------------------------------------------------------------------------
+[089] ID Obra  : 171
+      Título   : Tomo II
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,769 palabras | 26,505 caracteres
+--------------------------------------------------------------------------------
+[090] ID Obra  : 172
+      Título   : Calidad de Exportación: los organismos públicos locales electorales de México comparten sus mejores prácticas
+      Colección: Obras Institucionales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,368 palabras | 24,458 caracteres
+--------------------------------------------------------------------------------
+[091] ID Obra  : 173
+      Título   : Voto desde el extranjero 2024. Experiencias, aprendizajes y rutas de acción para futuros ejercicios democráticos
+      Colección: Obras Institucionales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,208 palabras | 29,235 caracteres
+--------------------------------------------------------------------------------
+[092] ID Obra  : 174
+      Título   : Cultura política y gobernabilidad democrática
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,743 palabras | 26,842 caracteres
+--------------------------------------------------------------------------------
+[093] ID Obra  : 176
+      Título   : Los adjetivos de la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,519 palabras | 25,077 caracteres
+--------------------------------------------------------------------------------
+[094] ID Obra  : 177
+      Título   : Los desafíos actuales de la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,808 palabras | 27,219 caracteres
+--------------------------------------------------------------------------------
+[095] ID Obra  : 178
+      Título   : Democracia, transición y gobernabilidad en América Latina
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,108 palabras | 22,235 caracteres
+--------------------------------------------------------------------------------
+[096] ID Obra  : 180
+      Título   : La transición española: el autoritarismo a la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,625 palabras | 25,325 caracteres
+--------------------------------------------------------------------------------
+[097] ID Obra  : 181
+      Título   : Democracia y desigualdad en América Latina
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,985 palabras | 28,375 caracteres
+--------------------------------------------------------------------------------
+[098] ID Obra  : 182
+      Título   : Consolidación democrática y orden político en América Latina después del ajuste económico
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,413 palabras | 24,507 caracteres
+--------------------------------------------------------------------------------
+[099] ID Obra  : 183
+      Título   : Presidencialismo y parlamentarismo en América Latina
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,056 palabras | 29,238 caracteres
+--------------------------------------------------------------------------------
+[100] ID Obra  : 185
+      Título   : Límites de la ingeniería constitucional
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,184 palabras | 22,826 caracteres
+--------------------------------------------------------------------------------
+[101] ID Obra  : 186
+      Título   : La aceptabilidad de la derrota, esencia de la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,137 palabras | 29,164 caracteres
+--------------------------------------------------------------------------------
+[102] ID Obra  : 187
+      Título   : Democracia, alternancia, elecciones
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,601 palabras | 25,553 caracteres
+--------------------------------------------------------------------------------
+[103] ID Obra  : 189
+      Título   : Derechos y ciudadanía: contrastes entre el liberalismo y el pensamiento conservador
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,564 palabras | 25,505 caracteres
+--------------------------------------------------------------------------------
+[104] ID Obra  : 190
+      Título   : Teoría de la democracia. Dos perspectivas comparadas
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,368 palabras | 24,422 caracteres
+--------------------------------------------------------------------------------
+[105] ID Obra  : 191
+      Título   : Educación en valores y democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,558 palabras | 32,667 caracteres
+--------------------------------------------------------------------------------
+[106] ID Obra  : 192
+      Título   : El futuro de la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,259 palabras | 23,293 caracteres
+--------------------------------------------------------------------------------
+[107] ID Obra  : 193
+      Título   : Calidad democrática entre líderes y partidos y La calidad del liderazgo político en los países andinos
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 2,996 palabras | 21,608 caracteres
+--------------------------------------------------------------------------------
+[108] ID Obra  : 194
+      Título   : Inflexión histórica: la situación social-institucional en el cambio político de América Latina
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,805 palabras | 27,380 caracteres
+--------------------------------------------------------------------------------
+[109] ID Obra  : 195
+      Título   : Estado, ciudadanía y educación: las fuerzas de la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,340 palabras | 23,438 caracteres
+--------------------------------------------------------------------------------
+[110] ID Obra  : 196
+      Título   : Venezuela: el gobierno de Hugo Chávez y sus fuerzas bolivarianas
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,313 palabras | 23,365 caracteres
+--------------------------------------------------------------------------------
+[111] ID Obra  : 197
+      Título   : De la democracia desencantada al desencanto democrático
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,690 palabras | 26,723 caracteres
+--------------------------------------------------------------------------------
+[112] ID Obra  : 198
+      Título   : La diversidad cultural a debate. Quebec consulta a la ciudadanía
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,220 palabras | 30,170 caracteres
+--------------------------------------------------------------------------------
+[113] ID Obra  : 199
+      Título   : Modelos de comunicación política: el caso de España
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,442 palabras | 24,644 caracteres
+--------------------------------------------------------------------------------
+[114] ID Obra  : 200
+      Título   : Los límites de la democracia: paradojas y tensiones
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,395 palabras | 31,234 caracteres
+--------------------------------------------------------------------------------
+[115] ID Obra  : 201
+      Título   : Derechos débiles, democracias frágiles. Sobre el espíritu de nuestro tiempo
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,909 palabras | 27,593 caracteres
+--------------------------------------------------------------------------------
+[116] ID Obra  : 203
+      Título   : Democracia, gobernabilidad y gobernanza
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,031 palabras | 28,785 caracteres
+--------------------------------------------------------------------------------
+[117] ID Obra  : 205
+      Título   : Democracia y cuestión social: otra vuelta de tuerca
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,705 palabras | 34,267 caracteres
+--------------------------------------------------------------------------------
+[118] ID Obra  : 207
+      Título   : Breve historia del futuro de las elecciones
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,516 palabras | 25,075 caracteres
+--------------------------------------------------------------------------------
+[119] ID Obra  : 209
+      Título   : Senderos que se bifurcan. Reflexiones sobre neoliberalismo y democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,443 palabras | 24,498 caracteres
+--------------------------------------------------------------------------------
+[120] ID Obra  : 211
+      Título   : Cien años de Reformismo Electoral en México: 1918 – 2018
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,594 palabras | 25,375 caracteres
+--------------------------------------------------------------------------------
+[121] ID Obra  : 213
+      Título   : ¿Puede sobrevivir nuestra democracia? Liderazgo y agencia política en América Latina
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,433 palabras | 24,622 caracteres
+--------------------------------------------------------------------------------
+[122] ID Obra  : 215
+      Título   : Pleonocracia: crítica de la democracia mayoritaria
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,745 palabras | 26,398 caracteres
+--------------------------------------------------------------------------------
+[123] ID Obra  : 217
+      Título   : Movimiento estudiantil del 68 y la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,522 palabras | 24,433 caracteres
+--------------------------------------------------------------------------------
+[124] ID Obra  : 219
+      Título   : Medio ambiente y democracia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,461 palabras | 24,698 caracteres
+--------------------------------------------------------------------------------
+[125] ID Obra  : 221
+      Título   : Desigualdad y democracia: la inclusión social y el acceso a derechos humanos en las Américas
+      Colección: Conferencias Magistrales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,627 palabras | 32,837 caracteres
+--------------------------------------------------------------------------------
+[126] ID Obra  : 223
+      Título   : Democracia y sexualidad
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,268 palabras | 22,751 caracteres
+--------------------------------------------------------------------------------
+[127] ID Obra  : 225
+      Título   : Género, democracia y cuotas. ¿Cuándo funcionan las cuotas de género?
+      Colección: Conferencias Magistrales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,251 palabras | 30,333 caracteres
+--------------------------------------------------------------------------------
+[128] ID Obra  : 227
+      Título   : La democracia y su relación con el poder judicial
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,069 palabras | 22,123 caracteres
+--------------------------------------------------------------------------------
+[129] ID Obra  : 229
+      Título   : Ciencia y democracia: quo vadis, México?
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,644 palabras | 26,856 caracteres
+--------------------------------------------------------------------------------
+[130] ID Obra  : 231
+      Título   : Historia mínima de las elecciones en México
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,767 palabras | 27,200 caracteres
+--------------------------------------------------------------------------------
+[131] ID Obra  : 233
+      Título   : Democracia y redes sociales
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,480 palabras | 25,053 caracteres
+--------------------------------------------------------------------------------
+[132] ID Obra  : 235
+      Título   : Democracia y laicidad
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,893 palabras | 27,028 caracteres
+--------------------------------------------------------------------------------
+[133] ID Obra  : 237
+      Título   : Democracia y derechos humanos
+      Colección: Conferencias Magistrales
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,024 palabras | 27,284 caracteres
+--------------------------------------------------------------------------------
+[134] ID Obra  : 239
+      Título   : La democracia directa (no) puede ser el problema: ni “participacionismo improductivo” ni “partidocracia”
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,883 palabras | 28,077 caracteres
+--------------------------------------------------------------------------------
+[135] ID Obra  : 241
+      Título   : Democracia y transparencia: binomio indisoluble
+      Colección: Conferencias Magistrales
+      Eje      : Transparencia y Rendición de Cuentas
+      Métricas : 3,442 palabras | 24,271 caracteres
+--------------------------------------------------------------------------------
+[136] ID Obra  : 243
+      Título   : Democracia y Movimientos Sociales
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,426 palabras | 24,189 caracteres
+--------------------------------------------------------------------------------
+[137] ID Obra  : 245
+      Título   : ¿Cuántos borradores necesita la patria?
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,194 palabras | 22,424 caracteres
+--------------------------------------------------------------------------------
+[138] ID Obra  : 247
+      Título   : Democracia y Pandemia
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,263 palabras | 22,518 caracteres
+--------------------------------------------------------------------------------
+[139] ID Obra  : 249
+      Título   : La mecánica del retroceso democrático
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,563 palabras | 25,492 caracteres
+--------------------------------------------------------------------------------
+[140] ID Obra  : 251
+      Título   : Democracia, infancias, adolescencias
+      Colección: Conferencias Magistrales
+      Eje      : Educación Cívica e Infancias
+      Métricas : 3,974 palabras | 28,044 caracteres
+--------------------------------------------------------------------------------
+[141] ID Obra  : 253
+      Título   : Democracia e inclusión de las personas LGBTTTIQ+
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,671 palabras | 25,706 caracteres
+--------------------------------------------------------------------------------
+[142] ID Obra  : 255
+      Título   : La independencia y autonomía de los órganos electorales y la integridad de las elecciones
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,588 palabras | 25,459 caracteres
+--------------------------------------------------------------------------------
+[143] ID Obra  : 257
+      Título   : Violencia digital y mediática
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,783 palabras | 27,382 caracteres
+--------------------------------------------------------------------------------
+[144] ID Obra  : 259
+      Título   : Elecciones, erosión democrática y oposición
+      Colección: Conferencias Magistrales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,770 palabras | 26,332 caracteres
+--------------------------------------------------------------------------------
+[145] ID Obra  : 261
+      Título   : Retos de la democracia en tiempos de retroceso democrático
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,379 palabras | 24,128 caracteres
+--------------------------------------------------------------------------------
+[146] ID Obra  : 263
+      Título   : El impacto de la corrupción en la democracia
+      Colección: Conferencias Magistrales
+      Eje      : Transparencia y Rendición de Cuentas
+      Métricas : 4,210 palabras | 30,143 caracteres
+--------------------------------------------------------------------------------
+[147] ID Obra  : 265
+      Título   : La educación para la paz
+      Colección: Conferencias Magistrales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,280 palabras | 29,565 caracteres
+--------------------------------------------------------------------------------
+[148] ID Obra  : 267
+      Título   : Tomo 1. Los sistemas de partidos en América Latina 1978-2015
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,310 palabras | 31,228 caracteres
+--------------------------------------------------------------------------------
+[149] ID Obra  : 268
+      Título   : Tomo 2. Los sistemas de partidos en América Latina 1978-2015
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,128 palabras | 22,744 caracteres
+--------------------------------------------------------------------------------
+[150] ID Obra  : 269
+      Título   : Retos y Desafíos del Proceso Electoral 2014-2015
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,299 palabras | 22,738 caracteres
+--------------------------------------------------------------------------------
+[151] ID Obra  : 270
+      Título   : 50 Elecciones en el Mundo (2012-2015)
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,747 palabras | 26,832 caracteres
+--------------------------------------------------------------------------------
+[152] ID Obra  : 271
+      Título   : Volumen I
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,834 palabras | 26,723 caracteres
+--------------------------------------------------------------------------------
+[153] ID Obra  : 272
+      Título   : Volumen II
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,610 palabras | 32,251 caracteres
+--------------------------------------------------------------------------------
+[154] ID Obra  : 273
+      Título   : Percepciones sobre la confianza, la seguridad y la justicia en la Consulta infantil y juvenil 2015
+      Colección: Temas Selectos de la Democracia
+      Eje      : Educación Cívica e Infancias
+      Métricas : 4,089 palabras | 27,872 caracteres
+--------------------------------------------------------------------------------
+[155] ID Obra  : 274
+      Título   : 20 años de alternancia electoral en el noroeste de México
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,095 palabras | 29,535 caracteres
+--------------------------------------------------------------------------------
+[156] ID Obra  : 275
+      Título   : La representación política de las mujeres en México
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,553 palabras | 31,649 caracteres
+--------------------------------------------------------------------------------
+[157] ID Obra  : 276
+      Título   : El Instituto Federal Electoral, Presencia y legado
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,544 palabras | 24,475 caracteres
+--------------------------------------------------------------------------------
+[158] ID Obra  : 277
+      Título   : Presentación
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,020 palabras | 28,386 caracteres
+--------------------------------------------------------------------------------
+[159] ID Obra  : 278
+      Título   : Uf, ¿y para qué votar?
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,355 palabras | 29,539 caracteres
+--------------------------------------------------------------------------------
+[160] ID Obra  : 279
+      Título   : 20 elecciones en el Mundo (2016-2017)
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,536 palabras | 25,435 caracteres
+--------------------------------------------------------------------------------
+[161] ID Obra  : 280
+      Título   : Crónica de las elecciones 2018
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,148 palabras | 28,618 caracteres
+--------------------------------------------------------------------------------
+[162] ID Obra  : 281
+      Título   : Retrato de grupo con credencial de elector. Imágenes de la democracia 2006, 2009, 2012
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,826 palabras | 26,434 caracteres
+--------------------------------------------------------------------------------
+[163] ID Obra  : 282
+      Título   : Ciudadanía, democracia y propaganda electoral en México, 1910-2018
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,744 palabras | 35,308 caracteres
+--------------------------------------------------------------------------------
+[164] ID Obra  : 283
+      Título   : Confianza en las noticias en redes sociales. El caso de la ciudad de Leeds en la elección general de Reino Unido 2017
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,692 palabras | 26,490 caracteres
+--------------------------------------------------------------------------------
+[165] ID Obra  : 284
+      Título   : La parcialidad de la comunicación política en los programas de noticias y su impacto en los votos en las elecciones federales de 2015
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,169 palabras | 29,120 caracteres
+--------------------------------------------------------------------------------
+[166] ID Obra  : 285
+      Título   : Estado de derecho, democracia y educación ciudadana
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,757 palabras | 26,190 caracteres
+--------------------------------------------------------------------------------
+[167] ID Obra  : 286
+      Título   : Análisis de las trayectorias de las mujeres en los partidos políticos: obstáculos y prospectiva para su desarrollo
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,961 palabras | 27,784 caracteres
+--------------------------------------------------------------------------------
+[168] ID Obra  : 287
+      Título   : El impacto de las medidas afirmativas de género en el registro de candidaturas en el Proceso Electoral Federal 2017-2018
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,396 palabras | 30,383 caracteres
+--------------------------------------------------------------------------------
+[169] ID Obra  : 288
+      Título   : 30 elecciones en el Mundo (2018-2019)
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,031 palabras | 29,008 caracteres
+--------------------------------------------------------------------------------
+[170] ID Obra  : 289
+      Título   : Representación y participación política indígena en México
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,603 palabras | 26,108 caracteres
+--------------------------------------------------------------------------------
+[171] ID Obra  : 290
+      Título   : Estudio sobre mecanismos de inclusión electoral en perspectiva internacional comparada
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,986 palabras | 28,349 caracteres
+--------------------------------------------------------------------------------
+[172] ID Obra  : 291
+      Título   : El sufragio extraterritorial de las y los mexicanos. Participación, preferencias políticas y tipología del voto a distancia
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,052 palabras | 28,064 caracteres
+--------------------------------------------------------------------------------
+[173] ID Obra  : 292
+      Título   : Los Congresos locales en México. Un estudio comparado sobre la representación política
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,785 palabras | 26,832 caracteres
+--------------------------------------------------------------------------------
+[174] ID Obra  : 293
+      Título   : La paridad, una realidad aún por construir en los congresos locales en México
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,493 palabras | 24,799 caracteres
+--------------------------------------------------------------------------------
+[175] ID Obra  : 294
+      Título   : International comparative study on electoral inclusion
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,019 palabras | 29,118 caracteres
+--------------------------------------------------------------------------------
+[176] ID Obra  : 295
+      Título   : Documento principal
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,672 palabras | 25,987 caracteres
+--------------------------------------------------------------------------------
+[177] ID Obra  : 296
+      Título   : Resumen ejecutivo
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,926 palabras | 27,952 caracteres
+--------------------------------------------------------------------------------
+[178] ID Obra  : 297
+      Título   : Participación ciudadana innovadora y nuevas instituciones democráticas. La ola deliberativa
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,731 palabras | 27,057 caracteres
+--------------------------------------------------------------------------------
+[179] ID Obra  : 298
+      Título   : El poder de la y el votante. Elecciones y desigualdad política en el gobierno democrático
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,948 palabras | 27,591 caracteres
+--------------------------------------------------------------------------------
+[180] ID Obra  : 299
+      Título   : Las voces de las infancias y juventudes Análisis especializado de los resultados de la Consulta Infantil y Juvenil 2021
+      Colección: Temas Selectos de la Democracia
+      Eje      : Educación Cívica e Infancias
+      Métricas : 3,453 palabras | 23,933 caracteres
+--------------------------------------------------------------------------------
+[181] ID Obra  : 300
+      Título   : Violencia política contra las mujeres en razón de género en México: Proceso Electoral Federal 2020-2021
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,395 palabras | 30,565 caracteres
+--------------------------------------------------------------------------------
+[182] ID Obra  : 301
+      Título   : Miradas actuales sobre Ámerica Latina: democracia, violence y pandemia
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,484 palabras | 24,960 caracteres
+--------------------------------------------------------------------------------
+[183] ID Obra  : 302
+      Título   : El IFE y el INE en controversias constitucionales. Una revisión de asuntos
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,251 palabras | 29,791 caracteres
+--------------------------------------------------------------------------------
+[184] ID Obra  : 303
+      Título   : Acciones afirmativas y democracia sustantiva. Reflexiones más allá de las cuotas electorales
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,326 palabras | 31,098 caracteres
+--------------------------------------------------------------------------------
+[185] ID Obra  : 304
+      Título   : Conectados pero desinformados: Los retos de la participación ciudadana juvenil mexicana en la era digital
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,506 palabras | 24,815 caracteres
+--------------------------------------------------------------------------------
+[186] ID Obra  : 305
+      Título   : Notas para la optimización del sistema electoral mexicano. Contexto y perspectiva
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,939 palabras | 27,905 caracteres
+--------------------------------------------------------------------------------
+[187] ID Obra  : 306
+      Título   : Comunicación, política y género. Un análisis de campañas electorales federales en radio y televisión en México
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,263 palabras | 30,040 caracteres
+--------------------------------------------------------------------------------
+[188] ID Obra  : 307
+      Título   : Partidos políticos en México. Función representativa y formación ciudadana a dos décadas de alternancia
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,456 palabras | 24,680 caracteres
+--------------------------------------------------------------------------------
+[189] ID Obra  : 308
+      Título   : Elección Judicial 2025. Las estrategias de campaña de las candidatas y los candidatos a la suprema corte de justicia de la nación en redes sociales
+      Colección: Temas Selectos de la Democracia
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,379 palabras | 23,921 caracteres
+--------------------------------------------------------------------------------
+[190] ID Obra  : 309
+      Título   : La larga lucha feminista y su incidencia en la democracia
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,403 palabras | 30,424 caracteres
+--------------------------------------------------------------------------------
+[191] ID Obra  : 310
+      Título   : Cultura política y participación ciudadana: tensiones, avances y desafíos en la construcción de la democracia mexicana
+      Colección: Temas Selectos de la Democracia
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,993 palabras | 28,541 caracteres
+--------------------------------------------------------------------------------
+[192] ID Obra  : 311
+      Título   : Paridad de género en los gobiernos submunicipales en México: problemas y retos a futuro
+      Colección: Temas Selectos de la Democracia
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,769 palabras | 26,681 caracteres
+--------------------------------------------------------------------------------
+[193] ID Obra  : 312
+      Título   : Avances y perspectivas de la democracia paritaria en los procesos electorales locales y federales de 2018
+      Colección: Estudios Electorales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 4,274 palabras | 29,662 caracteres
+--------------------------------------------------------------------------------
+[194] ID Obra  : 313
+      Título   : Las culturas políticas de las y los mexicanos
+      Colección: Estudios Electorales
+      Eje      : Cultura Democrática y Ciudadanía
+      Métricas : 3,857 palabras | 27,149 caracteres
+--------------------------------------------------------------------------------
+[195] ID Obra  : 314
+      Título   : México 2018: La elección presidencial en los estados
+      Colección: Estudios Electorales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 4,009 palabras | 28,451 caracteres
+--------------------------------------------------------------------------------
+[196] ID Obra  : 315
+      Título   : Las Elecciones en México 2017-2019 en perspectiva comparada
+      Colección: Estudios Electorales
+      Eje      : Sistemas y Procesos Electorales
+      Métricas : 3,173 palabras | 21,976 caracteres
+--------------------------------------------------------------------------------
+[197] ID Obra  : 316
+      Título   : Ciudadanía e insurrección. La lucha por los derechos políticos de las mujeres en México
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,896 palabras | 26,984 caracteres
+--------------------------------------------------------------------------------
+[198] ID Obra  : 317
+      Título   : Erradicación de la violencia política contra las mujeres en razón de género
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,648 palabras | 32,242 caracteres
+--------------------------------------------------------------------------------
+[199] ID Obra  : 318
+      Título   : Democracia paritaria: avances y desafíos en la representación de las mujeres
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,820 palabras | 27,007 caracteres
+--------------------------------------------------------------------------------
+[200] ID Obra  : 319
+      Título   : La participación de las mujeres en los partidos políticos
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,075 palabras | 28,874 caracteres
+--------------------------------------------------------------------------------
+[201] ID Obra  : 320
+      Título   : Tres décadas de activismo político de las mujeres indígenas y afrodescendientes en México (1990-2023)
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 4,447 palabras | 32,145 caracteres
+--------------------------------------------------------------------------------
+[202] ID Obra  : 321
+      Título   : Las mujeres en la Cámara de Diputados de México: de la representación descriptiva a la distribución del poder por género
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,839 palabras | 26,637 caracteres
+--------------------------------------------------------------------------------
+[203] ID Obra  : 322
+      Título   : La participación de las mujeres en México más allá de los partidos políticos
+      Colección: Paridad de Género y Derechos Humanos de las Mujeres
+      Eje      : Paridad de Género y DDHH
+      Métricas : 3,636 palabras | 25,341 caracteres
+--------------------------------------------------------------------------------
