@@ -1,5 +1,23 @@
 # 📝 Bitácora de Desarrollo (CHANGELOG)
 
+## [v1.3.0] - 2026-10-10
+
+### 🚀 Cobertura 100% de Índices Literales (203/203)
+- **Extracción Completa:** Finalizada la extracción literal y fiel de las tablas de contenido impresas para el 100% de las obras elegibles en DuckDB (`acervo_enriquecido`).
+- **Descarga Parcial para PDFs Masivos (>1 GB):**
+  - Desarrollo del script `R/13_resolver_tomos_170_171.R` con peticiones de rango HTTP (`Range: bytes=0-15728640`).
+  - Descarga ligera de los primeros 15 MB de los Tomos I (ID 170) y II (ID 171) de Obras Institucionales, logrando procesar sus preliminares en segundos sin descargar el archivo completo de +1 GB.
+
+### 🎨 Refinamiento de Interfaz y Estilos CSS (`app.R`)
+- **Estandarización Tipográfica a Arial:** Configuración de `font-family: 'Arial', sans-serif !important;` en todas las vistas de detalle (Resumen Ejecutivo e Índice).
+- **Formatos de Encabezados:** Los seis bloques analíticos del Resumen Ejecutivo y su título principal se presentan destacados en Arial Negritas (`#1D3557`).
+- **Limpieza y Estructura del Índice:**
+  - Depuración automática de cabeceras redundantes (`ÍNDICE GENERAL`, `Contenido`, `Tabla de Contenidos`).
+  - Ajuste de interlineado compacto a salto sencillo (`\n`) con `line-height: 1.5` para eliminar espaciado excesivo entre secciones.
+  - Inserción de puntos suspensivos formateados antes y después de la numeración de página (`... 15 ...`).
+  - Restricción estricta de itálicas exclusivamente para el cuerpo del texto en la pestaña `Índice`, removiéndolas de las tarjetas de la galería, la tabla general y los encabezados modales.
+- **Pestaña Modal Simplificada:** Renombrada la pestaña de la ventana emergente de detalle a solo **`Índice`**.
+
 ## [v1.2.1] - 2026-10-07
 
 ### 🐛 Fixed & Patched
