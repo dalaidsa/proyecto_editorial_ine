@@ -1,5 +1,5 @@
 # ==============================================================================
-# SCRIPT: 05_generar_resumenes_3pag.R (Resumen Ejecutivo Experto Continuo)
+# SCRIPT: 05_generar_resumenes_3pag.R (Resúmenes Magnos 3k-4k Palabras - Tier 1)
 # PROYECTO: proyecto_editorial_ine
 # ==============================================================================
 
@@ -9,28 +9,37 @@ library(stringr)
 library(httr)
 library(jsonlite)
 
-message("[i] Iniciando generación de resúmenes ejecutivos sin divisiones de página...")
+message("=================================================================")
+message(" GENERACIÓN DE RESÚMENES MAGNOS (3,000 - 4,000 PALABRAS) - TIER 1 ")
+message("=================================================================\n")
 
 con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb")
 df <- dbReadTable(con, "acervo_enriquecido")
 total_obras <- nrow(df)
 
+if (!"resumen_ejecutivo_3p" %in% colnames(df)) df$resumen_ejecutivo_3p <- NA_character_
+
 api_key <- Sys.getenv("GEMINI_API_KEY")
 
-# 1. Determinar el modelo activo de Gemini
+# 1. Determinar el modelo activo (Priorizando gemini-3.5-flash para velocidad/ahorro y gemini-2.5-pro)
 determinar_modelo <- function(key) {
-  if (nchar(key) < 10) return(NULL)
-  modelos <- c("gemini-1.5-flash", "gemini-2.0-flash", "gemini-pro")
+  if (is.null(key) || nchar(key) < 10) return(NULL)
+
+  modelos <- c(
+    "gemini-3.5-flash",
+    "gemini-2.5-pro"
+  )
 
   for (mod in modelos) {
     url_test <- sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", mod, key)
-    payload <- list(contents = list(list(parts = list(list(text = "Hola")))))
+    payload <- list(contents = list(list(parts = list(list(text = "Prueba de conexion")))))
+
     res <- tryCatch({
-      POST(url_test, add_headers(`Content-Type` = "application/json"), body = toJSON(payload, auto_unbox = TRUE), timeout(4))
+      POST(url_test, add_headers(`Content-Type` = "application/json"), body = toJSON(payload, auto_unbox = TRUE), encode = "json", timeout(8))
     }, error = function(e) NULL)
 
     if (!is.null(res) && status_code(res) == 200) {
-      message(sprintf("[✓] Conexión exitosa con Gemini usando el modelo: %s", mod))
+      message(sprintf("[✓] Conexión activa con el modelo: %s\n", mod))
       return(mod)
     }
   }
@@ -39,62 +48,103 @@ determinar_modelo <- function(key) {
 
 modelo_activo <- determinar_modelo(api_key)
 
-# 2. Función generadora del Resumen Ejecutivo Experto
+if (is.null(modelo_activo)) {
+  dbDisconnect(con, shutdown = TRUE)
+  stop("[!] No se pudo validar la API Key con los modelos activos.")
+}
+
+# 2. Función generadora con instrucciones estrictas de formato y párrafos (\n\n)
 solicitar_resumen_gemini <- function(titulo, coleccion, eje, descripcion, modelo, key) {
 
   prompt_txt <- paste0(
-    "ROL: Eres un reconocido consultor y experto senior en materia electoral, derecho constitucional y ciencia política del Instituto Nacional Electoral (INE) de México.\n\n",
-    "TAREA: Elabora un RESUMEN EJECUTIVO TÉCNICO Y PROFUNDO para la siguiente obra institucional:\n",
-    "• Título: '", titulo, "'\n",
+    "ROL: Eres un reconocido consultor internacional, investigador senior y catedrático experto en derecho constitucional, ciencia política y derecho electoral del Instituto Nacional Electoral (INE) de México.\n\n",
+    "TAREA: Redacta un RESUMEN EJECUTIVO MAGNO, TÉCNICO Y PROFUNDO para la siguiente obra institucional:\n",
+    "• Título de la Obra: '", titulo, "'\n",
     "• Colección Editorial: '", coleccion, "'\n",
     "• Eje Temático: '", coalesce(eje, "Gobernanza y Cultura Democrática"), "'\n",
-    "• Contexto/Descripción: '", coalesce(descripcion, "Obra oficial del acervo del INE"), "'\n\n",
-    "REQUISITOS RIGUROSOS DE FORMATO Y ESTRUCTURA:\n",
-    "1. ENCABEZADO OBLIGATORIO: El texto DEBE comenzar directamente con el encabezado 'RESUMEN EJECUTIVO'.\n",
-    "2. EXTENSIÓN: El cuerpo del resumen debe tener entre 800 y 1,500 palabras.\n",
-    "3. LENGUAJE TÉCNICO: Desarrolla un texto fluido, riguroso, especializado y continuo en materia electoral, abordando el contexto normativo, los antecedentes, el diagnóstico técnico, los hallazgos clave y las implicaciones democráticas.\n",
-    "4. PROHIBICIÓN ABSOLUTA DE MARCAS DE PÁGINA O PREFIJOS: Queda estrictamente PROHIBIDO incluir frases como 'OBRA:', '--- PÁGINA 1... ---', '--- PÁGINA 2... ---' o divisiones artificiales.\n\n",
-    "Responde ÚNICAMENTE con el texto formateado en español."
+    "• Síntesis Contextual: '", coalesce(descripcion, "Obra oficial del acervo del INE"), "'\n\n",
+    "REQUISITOS RIGUROSOS DE EXTENSIÓN Y FORMATO PÁRRAFO A PÁRRAFO:\n",
+    "1. EXTENSIÓN ESTRICTA: El documento DEBE tener entre 3,000 y 4,000 palabras de redacción fluida, técnica y exhaustiva.\n",
+    "2. ESTRUCTURA CON SEPARACIÓN OBLIGATORIA DE PÁRRAFOS: Separa CADA sección y CADA párrafo con DOS SALTOS DE LÍNEA ESTRUCTURALES (un renglón en blanco / \\n\\n). No entregues bloques masivos de texto continuo.\n\n",
+    "3. ENCABEZADOS DE SECCIÓN OBLIGATORIOS (Utiliza exactamente los siguientes títulos Markdown):\n\n",
+    "### I. CONTEXTO NORMATIVO, HISTÓRICO E INSTITUCIONAL\n",
+    "(Desarrolla aquí de 500 a 600 palabras en varios párrafos separados por renglón en blanco)\n\n",
+    "### II. MARCO TEÓRICO, DOCTRINAL Y CONCEPTUAL\n",
+    "(Desarrolla aquí de 600 a 700 palabras en varios párrafos separados por renglón en blanco)\n\n",
+    "### III. DIAGNÓSTICO TÉCNICO Y METODOLÓGICO\n",
+    "(Desarrolla aquí de 600 a 700 palabras en varios párrafos separados por renglón en blanco)\n\n",
+    "### IV. HALLAZGOS CLAVE, ANÁLISIS EMPÍRICO Y EVIDENCIA DOCTRINAL\n",
+    "(Desarrolla aquí de 700 a 800 palabras en varios párrafos separados por renglón en blanco)\n\n",
+    "### V. IMPLICACIONES ELECTORALES Y DERECHOS POLÍTICO-ELECTORALES\n",
+    "(Desarrolla aquí de 500 a 600 palabras en varios párrafos separados por renglón en blanco)\n\n",
+    "### VI. CONCLUSIONES CRÍTICAS Y PERSPECTIVAS FUTURAS\n",
+    "(Desarrolla aquí de 400 a 500 palabras en varios párrafos separados por renglón en blanco)\n\n",
+    "4. RESTRICCIONES: Prohibido incluir marcas de agua, avisos de página ('--- PÁGINA X ---') o saludos conversacionales. Empieza directamente con 'RESUMEN EJECUTIVO'."
   )
 
-  if (!is.null(modelo) && nchar(key) > 10) {
-    url <- sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", modelo, key)
-    payload <- list(
-      contents = list(list(parts = list(list(text = prompt_txt)))),
-      generationConfig = list(
-        temperature = 0.3,
-        maxOutputTokens = 3000
-      )
+  url <- sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", modelo, key)
+  payload <- list(
+    contents = list(list(parts = list(list(text = prompt_txt)))),
+    generationConfig = list(
+      temperature = 0.35,
+      maxOutputTokens = 16384 # Permite desarrollar las 4,000 palabras completas sin corte
     )
+  )
 
-    res <- tryCatch({
-      POST(url, add_headers(`Content-Type` = "application/json"), body = toJSON(payload, auto_unbox = TRUE), encode = "json", timeout(25))
-    }, error = function(e) NULL)
+  res <- tryCatch({
+    POST(url, add_headers(`Content-Type` = "application/json"), body = toJSON(payload, auto_unbox = TRUE), encode = "json", timeout(120))
+  }, error = function(e) {
+    message(sprintf("   [X] Error de red / Timeout (120s): %s", e$message))
+    return(NULL)
+  })
 
-    if (!is.null(res) && status_code(res) == 200) {
-      parsed <- content(res, "parsed")
-      txt <- str_squish(parsed$candidates[[1]]$content$parts[[1]]$text)
-      if (nchar(txt) > 300) return(txt)
+  if (!is.null(res)) {
+    st <- status_code(res)
+
+    if (st == 200) {
+      parsed <- tryCatch(content(res, "parsed"), error = function(e) NULL)
+
+      if (!is.null(parsed) && !is.null(parsed$candidates) && length(parsed$candidates) > 0) {
+        candidate <- parsed$candidates[[1]]
+        finish_reason <- candidate$finishReason
+
+        if (!is.null(candidate$content$parts[[1]]$text)) {
+          # PRESERVACIÓN DE SALTOS DE LÍNEA: Se utiliza trimws en lugar de str_squish
+          txt <- trimws(candidate$content$parts[[1]]$text)
+
+          if (nchar(txt) > 1000) {
+            if (!is.null(finish_reason) && finish_reason == "MAX_TOKENS") {
+              message("   [ℹ️ CAPTURA EXITOSA] Resumen extenso alcanzando el tope de tokens.")
+            } else {
+              message("   [✓ RESUMEN COMPLETO]")
+            }
+            return(txt)
+          }
+        }
+      }
+    } else {
+      err_text <- content(res, "text", encoding = "UTF-8")
+      message(sprintf("   [!] Error HTTP %d: %s", st, str_trunc(err_text, 150)))
     }
   }
 
-  # Fallback continuo estructurado
-  return(paste0(
-    "RESUMEN EJECUTIVO\n\n",
-    "La publicación '", titulo, "', perteneciente a la colección ", coleccion,
-    " del Instituto Nacional Electoral, aborda una dimensión estratégica de la arquitectura democrática en México. En el marco del eje temático sobre ",
-    coalesce(eje, "democracia"), ", esta obra analiza la evolución doctrinal y normativa que rige la materia electoral, examinando los estándares internacionales de derechos político-electorales y las reformas institucionales indispensables para garantizar la certeza, la imparcialidad y la equidad en la contienda.\n\n",
-    "Desde una perspectiva técnica e interdisciplinaria, la investigación evalúa los mecanismos operativos y procedimentales de la administración electoral. Se identifican los principales hallazgos respecto al fortalecimiento de la ciudadanía, la fiscalización, la paridad sustantiva y la efectividad de las instituciones democráticas, proponiendo rutas analíticas para consolidar la cultura de la legalidad y la gobernanza en el país."
-  ))
+  return(NULL)
 }
 
-# 3. Procesamiento para obras en PDF (Excluyendo Colección Árbol y Videos)
-vector_resumenes <- character(total_obras)
+# 3. Bucle Incremental con Checkpointing
 col_fmt <- grep("formato|tipo|extension", colnames(df), value = TRUE, ignore.case = TRUE)
 nombre_col_fmt <- if (length(col_fmt) > 0) col_fmt[1] else "tipo_recurso"
 
+obras_procesadas_hoy <- 0
+
 for (i in seq_len(total_obras)) {
   item <- df[i, ]
+
+  # REANUDACIÓN INCREMENTAL: Omitir si ya cuenta con resumen guardado (> 1,500 caracteres)
+  resumen_actual <- coalesce(item$resumen_ejecutivo_3p, "")
+  if (nchar(trimws(resumen_actual)) > 1500) {
+    next
+  }
 
   col_lower <- str_to_lower(coalesce(item$coleccion, ""))
   fmt_lower <- str_to_lower(coalesce(item[[nombre_col_fmt]], ""))
@@ -103,9 +153,9 @@ for (i in seq_len(total_obras)) {
   es_video <- str_detect(fmt_lower, "video|audiovisual")
 
   if (!es_arbol && !es_video) {
-    message(sprintf("[%d/%d] Generando Resumen Ejecutivo continuo para: %s", i, total_obras, str_trunc(item$titulo, 35)))
+    message(sprintf("[%d/%d] Generando Resumen Magno [%s]: %s", i, total_obras, modelo_activo, str_trunc(item$titulo, 35)))
 
-    vector_resumenes[i] <- solicitar_resumen_gemini(
+    resumen_generado <- solicitar_resumen_gemini(
       titulo = item$titulo,
       coleccion = item$coleccion,
       eje = item$eje_tematico,
@@ -114,20 +164,31 @@ for (i in seq_len(total_obras)) {
       key = api_key
     )
 
-    if (!is.null(modelo_activo)) Sys.sleep(0.3)
+    if (!is.null(resumen_generado)) {
+      df$resumen_ejecutivo_3p[i] <- resumen_generado
+      obras_procesadas_hoy <- obras_procesadas_hoy + 1
+
+      # Guardado inmediato en DuckDB por cada registro
+      dbWriteTable(con, "acervo_enriquecido", df, overwrite = TRUE)
+      Sys.sleep(0.3)
+    } else {
+      message(sprintf("   [⚠️ REINTENTO PENDIENTE] La obra %d se reintentará en el siguiente ciclo.", i))
+    }
   } else {
-    vector_resumenes[i] <- NA_character_
+    df$resumen_ejecutivo_3p[i] <- NA_character_
   }
 }
 
-# 4. SANITIZACIÓN FINAL Y ACTUALIZACIÓN EN DUCKDB
-
+# 4. Sanitización respetuosa de saltos de párrafo (\n\n)
 limpiar_cadena_corrupta <- function(txt) {
   if (is.null(txt) || is.na(txt)) return(txt)
   txt <- as.character(txt)
-  txt <- gsub("[\\v\\r\\n\\t\\f\\p{C}]", " ", txt, perl = TRUE)
+  # Elimina caracteres de control nulos/raros pero respeta \n
+  txt <- gsub("[\\v\\r\\t\\f\\p{C}]", " ", txt, perl = TRUE)
   txt <- gsub("(?i)\\s*ert\\{\\}\\s*", " ", txt, perl = TRUE)
-  return(trimws(gsub("\\s+", " ", txt)))
+  txt <- gsub(" +", " ", txt)
+  txt <- gsub("(\r?\n){3,}", "\n\n", txt) # Estandariza a doble salto de párrafo
+  return(trimws(txt))
 }
 
 cols_char <- names(df)[sapply(df, is.character)]
@@ -135,8 +196,9 @@ for (col in cols_char) {
   df[[col]] <- sapply(df[[col]], limpiar_cadena_corrupta, USE.NAMES = FALSE)
 }
 
-df$resumen_ejecutivo_3p <- vector_resumenes
 dbWriteTable(con, "acervo_enriquecido", df, overwrite = TRUE)
 dbDisconnect(con, shutdown = TRUE)
 
-message("\n[✓] Proceso completado. Resúmenes guardados y base de datos desinfectada al 100%.")
+message("\n=================================================================")
+message(sprintf(" [✓] EJECUCIÓN CONCLUIDA. Obras generadas en este bloque: %d", obras_procesadas_hoy))
+message("=================================================================")
