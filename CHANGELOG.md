@@ -1,5 +1,20 @@
 # 📝 Bitácora de Desarrollo (CHANGELOG)
 
+## [v1.4.0] - 2026-10-15
+
+### 📸 Extracción Real de Portadas PDF (358/358 Obras)
+- **Extracción Directa con `pdftools`:** Actualizado `R/04_extraer_portadas.R` para descargar y procesar automáticamente cada documento PDF real del acervo, renderizando su **primera página en formato JPG a 150 DPI**.
+- **Sincronización Estricta 1:1 en DuckDB:** Reindexación secuencial del identificador único `id_obra` (1 a 358) en la tabla `acervo_enriquecido`, asegurando coincidencia exacta entre cada registro de la base de datos y la imagen física `www/portadas/portada_{id_obra}.jpg`.
+- **Eliminación Total de Portadas Genéricas:** Depuración del directorio `www/portadas/` mediante la remoción física de `portada_generica.jpg` para prevenir asignaciones por defecto no deseadas.
+
+### 🎨 Corrección de Carga en Galería (`app.R`)
+- **Vinculación Directa por ID:** Reemplazada la lógica de asignación condicional de rutas para que `app.R` lea directamente el archivo `portada_{id_obra}.jpg` garantizado por DuckDB.
+- **Rompecaché Dinámico (*Cache-Busting*):** Incorporado el parámetro numérico `?v={id_obra}` en las etiquetas `<img>` de la galería para forzar la actualización inmediata en la memoria del navegador.
+- **Rutas Absolutas Defensivas:** Mapeo del directorio estático mediante `file.path(getwd(), "www", "portadas")` a través de `addResourcePath()`, asegurando la resolución correcta de imágenes independientemente del directorio de ejecución.
+- **Remoción de Fallbacks JS:** Eliminados los eventos `onerror` que provocaban la conmutación involuntaria hacia portadas genéricas durante la representación de la colección de *Conferencias Magistrales*.
+
+---
+
 ## [v1.3.0] - 2026-10-10
 
 ### 🚀 Cobertura 100% de Índices Literales (203/203)
