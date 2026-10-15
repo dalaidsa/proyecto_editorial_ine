@@ -12,9 +12,12 @@ library(dplyr)
 library(stringr)
 library(plotly)
 
-if (dir.exists("www/portadas")) {
-  addResourcePath(prefix = "portadas", directoryPath = "www/portadas")
+# 1. Mapeo estático con la ruta física absoluta de la carpeta de portadas
+dir_portadas_abs <- file.path(getwd(), "www", "portadas")
+if (!dir.exists(dir_portadas_abs)) {
+  dir.create(dir_portadas_abs, recursive = TRUE)
 }
+addResourcePath(prefix = "portadas", directoryPath = dir_portadas_abs)
 
 # ------------------------------------------------------------------------------
 # FUNCIONES AUXILIARES DE SANITIZACIÓN Y FORMATEO
@@ -27,35 +30,44 @@ limpiar_cadena_corrupta <- function(txt) {
   return(trimws(gsub("\\s+", " ", res)))
 }
 
+asegurar_url_absoluta <- function(u) {
+  if (is.null(u) || is.na(u) || !nzchar(trimws(u)) || u == "#") {
+    return("https://www.ine.mx/cuadernos-divulgacion-conferencias-magistrales/")
+  }
+  u <- trimws(u)
+  if (!str_detect(u, "(?i)^https?://")) {
+    if (str_starts(u, "(?i)www\\.")) {
+      u <- paste0("https://", u)
+    } else if (str_starts(u, "/")) {
+      u <- paste0("https://www.ine.mx", u)
+    } else {
+      u <- paste0("https://", u)
+    }
+  }
+  return(u)
+}
+
 formatear_markdown_resumen <- function(txt) {
   if (is.null(txt) || is.na(txt) || nchar(trimws(txt)) == 0) return("Resumen no disponible.")
 
   res <- as.character(txt)
-
-  # 1. Limpieza de etiquetas y marcas
   res <- gsub("(?i)ert\\{\\}", "", res, perl = TRUE)
   res <- gsub("(?i)^\\s*OBRA:\\s*.*?(\r?\n)+", "", res, perl = TRUE)
   res <- gsub("\\*\\*", "", res)
   res <- gsub("__", "", res)
   res <- gsub("(?i)<\\/?(b|strong)[^>]*>", "", res, perl = TRUE)
-
-  # 2. Reemplazar saltos de línea
   res <- gsub("\r\n", "\n", res)
 
-  # 3. Formatear las 6 secciones principales como Encabezados Markdown (###)
   patron_secciones <- "(?i)(?<=\\s|\\.|^|:)\\s*(#+\\s*)?(I|II|III|IV|V|VI)[\\.\\:-]\\s*"
   res <- gsub(patron_secciones, "\n\n### \\2. ", res, perl = TRUE)
 
-  # 4. Encabezado principal 'RESUMEN EJECUTIVO'
   res <- gsub("(?i)^\\s*(#+\\s*)?RESUMEN EJECUTIVO\\s*", "### RESUMEN EJECUTIVO\n\n", res, perl = TRUE)
   if (!str_detect(res, "(?i)^###\\s*RESUMEN EJECUTIVO")) {
     res <- paste0("### RESUMEN EJECUTIVO\n\n", res)
   }
 
-  # 5. Asegurar saltos dobles de párrafo (\n\n)
   res <- gsub("(?<!\n)\n(?!\n)", "\n\n", res, perl = TRUE)
   res <- gsub("\n{3,}", "\n\n", res)
-
   return(trimws(res))
 }
 
@@ -65,22 +77,17 @@ formatear_indice_vista <- function(txt) {
   }
 
   res <- as.character(txt)
-
-  # 1. Eliminar 'ÍNDICE GENERAL', 'INDICE GENERAL', 'CONTENIDO', 'TABLA DE CONTENIDOS'
   res <- gsub("(?i)^\\s*(#+\\s*)?(ÍNDICE GENERAL|INDICE GENERAL|CONTENIDO|TABLA DE CONTENIDOS)\\s*[\r\n]*", "", res, perl = TRUE)
   res <- gsub("(?i)\n\\s*(#+\\s*)?(ÍNDICE GENERAL|INDICE GENERAL|CONTENIDO|TABLA DE CONTENIDOS)\\s*[\r\n]*", "\n", res, perl = TRUE)
 
-  # 2. Dividir por líneas y limpiar
   lineas <- unlist(strsplit(res, "\n"))
   lineas <- trimws(lineas)
   lineas <- lineas[nzchar(lineas)]
 
-  # 3. Procesar cada línea agregando tres puntos (...) antes Y después del número
   lineas_procesadas <- sapply(lineas, function(l) {
     l <- gsub("^[*\\-\\•\\>\\#]+\\s*", "", l)
     l <- gsub("\\*\\*", "", l)
 
-    # Agregar ' ... ' entre título y número, y ' ...' después del número de página
     if (str_detect(l, "\\d+$")) {
       l <- gsub("\\s*\\.{2,}\\s*(\\d+)$", " ... \\1 ...", l, perl = TRUE)
       l <- gsub("(?<=[^\\.\\s])\\s+(\\d+)$", " ... \\1 ...", l, perl = TRUE)
@@ -91,15 +98,14 @@ formatear_indice_vista <- function(txt) {
     return(l)
   }, USE.NAMES = FALSE)
 
-  # 4. Unir con SALTO DE LÍNEA SENCILLO (\n) para evitar espacio excesivo
   return(paste(lineas_procesadas, collapse = "\n"))
 }
 
 # ------------------------------------------------------------------------------
-# 1. CARGA DE DATOS DESDE DUCKDB Y LIMPIEZA INICIAL
+# 1. CARGA DE DATOS DESDE DUCKDB
 # ------------------------------------------------------------------------------
 conectar_db <- function() {
-  con <- dbConnect(duckdb::duckdb(), dbdir = "data/acervo_ine.duckdb", read_only = TRUE)
+  con <- dbConnect(duckdb::duckdb(), dbdir = file.path(getwd(), "data", "acervo_ine.duckdb"), read_only = TRUE)
   return(con)
 }
 
@@ -107,50 +113,16 @@ con <- conectar_db()
 if ("acervo_enriquecido" %in% dbListTables(con)) {
   datos_acervo <- dbReadTable(con, "acervo_enriquecido")
 } else {
-  datos_acervo <- dbReadTable(con, "acervo_editorial") %>%
-    mutate(
-      eje_tematico = "Cultura Democrática y Ciudadanía",
-      poblacion_objetivo = "Público General",
-      sinopsis_real = descripcion,
-      palabras_clave = "Cultura Democrática",
-      ruta_portada = "portadas/portada_generica.jpg"
-    )
+  datos_acervo <- dbReadTable(con, "acervo_editorial")
 }
 dbDisconnect(con, shutdown = TRUE)
-
-if (!"url_recurso" %in% colnames(datos_acervo)) {
-  if ("url_descarga" %in% colnames(datos_acervo)) {
-    datos_acervo$url_recurso <- datos_acervo$url_descarga
-  } else if ("url" %in% colnames(datos_acervo)) {
-    datos_acervo$url_recurso <- datos_acervo$url
-  } else {
-    datos_acervo$url_recurso <- "#"
-  }
-}
-
-if (!"tipo_recurso" %in% colnames(datos_acervo)) {
-  if ("formato" %in% colnames(datos_acervo)) {
-    datos_acervo$tipo_recurso <- datos_acervo$formato
-  } else {
-    datos_acervo$tipo_recurso <- "PDF"
-  }
-}
-
-cols_char <- setdiff(names(datos_acervo)[sapply(datos_acervo, is.character)], c("resumen_ejecutivo_3p", "indice_tematico"))
-for (col in cols_char) {
-  datos_acervo[[col]] <- sapply(datos_acervo[[col]], limpiar_cadena_corrupta, USE.NAMES = FALSE)
-}
-
-datos_acervo <- datos_acervo %>%
-  filter(!str_detect(str_to_lower(coalesce(url_recurso, "")), "cuadernos-divulgacion-manuales-guias/?$"))
 
 if (!"id_obra" %in% colnames(datos_acervo)) {
   datos_acervo$id_obra <- seq_len(nrow(datos_acervo))
 }
 
-if (!"ruta_portada" %in% colnames(datos_acervo)) {
-  datos_acervo$ruta_portada <- paste0("portadas/portada_", datos_acervo$id_obra, ".jpg")
-}
+# Asignación estricta de la ruta individual por id_obra
+datos_acervo$ruta_portada <- sprintf("portadas/portada_%d.jpg", datos_acervo$id_obra)
 
 opciones_coleccion <- c("Todas", sort(unique(na.omit(datos_acervo$coleccion[datos_acervo$coleccion != ""]))))
 opciones_eje        <- c("Todos", sort(unique(na.omit(datos_acervo$eje_tematico[datos_acervo$eje_tematico != ""]))))
@@ -171,7 +143,6 @@ ui <- page_navbar(
 
   header = tags$head(
     tags$style(HTML("
-      /* TODO EL TEXTO DEL RESUMEN EJECUTIVO EN ARIAL */
       .resumen-markdown-body,
       .resumen-markdown-body * {
         font-family: 'Arial', sans-serif !important;
@@ -181,7 +152,6 @@ ui <- page_navbar(
         font-weight: 400 !important;
       }
 
-      /* ENCABEZADOS DEL RESUMEN EJECUTIVO EN ARIAL NEGRITAS */
       .resumen-markdown-body h3,
       .resumen-markdown-body h3 * {
         font-family: 'Arial', sans-serif !important;
@@ -201,7 +171,6 @@ ui <- page_navbar(
         display: block !important;
       }
 
-      /* TODO EL TEXTO DEL ÍNDICE EN ARIAL CON ITÁLICAS Y SALTO SENCILLO COMPACTO */
       .indice-body,
       .indice-body * {
         font-family: 'Arial', sans-serif !important;
@@ -225,7 +194,7 @@ ui <- page_navbar(
         textInput(
           inputId = "txt_busqueda",
           label = "Buscar obra, tema o palabras clave:",
-          placeholder = "Ej. voto, paridad, fake news, infancias..."
+          placeholder = "Ej. No. 1, Bobbio, paridad, voto..."
         ),
 
         selectInput(
@@ -283,6 +252,21 @@ ui <- page_navbar(
       ),
 
       uiOutput("contenedor_vista_dinamica")
+    )
+  ),
+
+  nav_panel(
+    title = "Cuentacuentos y Talleres",
+    icon = icon("masks-theater"),
+    div(
+      class = "container-fluid py-3",
+      div(
+        class = "p-4 mb-4 rounded-3 border shadow-sm text-center",
+        style = "background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);",
+        h3(class = "fw-bold", style = "color: #1D3557;", "🎬 Cuentacuentos y Talleres del INE"),
+        p(class = "text-muted mb-0", "Colección audiovisual completa con cuentacuentos, relatos y talleres recreativos.")
+      ),
+      uiOutput("galeria_cuentacuentos")
     )
   ),
 
@@ -388,7 +372,7 @@ server <- function(input, output, session) {
       )
     }
 
-    limite <- min(nrow(df), 48)
+    limite <- min(nrow(df), 60)
 
     tarjetas <- lapply(seq_len(limite), function(i_idx) {
       item <- df[i_idx, ]
@@ -397,9 +381,17 @@ server <- function(input, output, session) {
       eje_limpio        <- limpiar_cadena_corrupta(item$eje_tematico)
       titulo_limpio    <- limpiar_cadena_corrupta(item$titulo)
 
-      badge_color <- if(str_detect(eje_limpio, "Paridad")) "bg-danger" else "bg-dark"
+      url_recurso_final <- asegurar_url_absoluta(item$url_recurso)
 
-      kw_raw <- coalesce(item$palabras_clave, "Cultura Democrática")
+      es_video <- str_detect(str_to_lower(coalesce(item$tipo_recurso, "")), "video|audiovisual") ||
+        str_detect(str_to_lower(coalesce(url_recurso_final, "")), "youtube|vimeo")
+
+      lbl_formato <- if (es_video) "Video / Material Audiovisual" else coalesce(item$tipo_recurso, "Libro PDF")
+      badge_color <- if (es_video) "bg-danger" else "bg-dark"
+      icon_btn    <- if (es_video) "video" else "book-open"
+      lbl_btn     <- if (es_video) " Ver Video" else " Leer / Descargar"
+
+      kw_raw  <- coalesce(item$palabras_clave, "Cultura Democrática")
       tags_kw <- unlist(strsplit(kw_raw, ",\\s*"))
 
       sinopsis_txt <- ifelse(
@@ -408,13 +400,14 @@ server <- function(input, output, session) {
         "Sinopsis no disponible para esta obra."
       )
 
-      img_src <- sprintf("portadas/portada_%d.jpg", item$id_obra)
+      # RUTA DIRECTA Y OBLIGATORIA A LA PORTADA 1:1 DE CADA OBRA CON PARÁMETRO CACHE-BUSTER
+      img_src <- sprintf("portadas/portada_%d.jpg?v=%d", item$id_obra, item$id_obra)
 
       tiene_resumen_3p <- "resumen_ejecutivo_3p" %in% colnames(item) &&
         !is.na(item$resumen_ejecutivo_3p) &&
         nchar(trimws(coalesce(item$resumen_ejecutivo_3p, ""))) > 50
 
-      btn_resumen_3p <- if (tiene_resumen_3p) {
+      btn_resumen_3p <- if (tiene_resumen_3p && !es_video) {
         actionButton(
           inputId = paste0("btn_resumen_", item$id_obra),
           label = " Resumen e Índice (IA)",
@@ -434,12 +427,11 @@ server <- function(input, output, session) {
           div(
             class = "d-flex align-items-center justify-content-center bg-light p-2 position-relative border-bottom",
             style = "height: 220px; overflow: hidden; background-color: #f8f9fa;",
-            span(class = paste("badge position-absolute top-0 start-0 m-2 shadow-sm z-1", badge_color), item$tipo_recurso),
+            span(class = paste("badge position-absolute top-0 start-0 m-2 shadow-sm z-1", badge_color), lbl_formato),
             tags$img(
               src = img_src,
               style = "max-height: 100%; max-width: 100%; object-fit: contain; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);",
-              alt = titulo_limpio,
-              onerror = "this.onerror=null; this.src='portadas/portada_generica.jpg';"
+              alt = titulo_limpio
             )
           ),
 
@@ -468,11 +460,11 @@ server <- function(input, output, session) {
               class = "mt-2 pt-2 border-top text-center",
               btn_resumen_3p,
               a(
-                href = item$url_recurso,
+                href = url_recurso_final,
                 target = "_blank",
                 rel = "noopener noreferrer",
                 class = "btn btn-sm btn-outline-dark w-100 rounded-pill fw-bold",
-                icon("book-open"), " Leer / Descargar"
+                icon(icon_btn), lbl_btn
               )
             )
           )
@@ -483,8 +475,70 @@ server <- function(input, output, session) {
     div(class = "row", tarjetas)
   })
 
+  # Renderizado de Galería Cuentacuentos
+  output$galeria_cuentacuentos <- renderUI({
+    videos_completos <- tibble::tribble(
+      ~titulo, ~categoria, ~url_recurso, ~yt_id, ~descripcion,
+      "Escuchar a las niñas y los niños en tiempos de coronavirus con Pepe Gordon", "Cápsula de Divulgación", "https://www.youtube.com/watch?v=Iss-NKA6X9g", "Iss-NKA6X9g", "Cápsula explicativa sobre la voz de las infancias y la convivencia en el hogar.",
+      "¡¿Otro traje nuevo para el emperador?! con Nacho Casas", "Cuentacuentos", "https://www.youtube.com/watch?v=h2_efXIIrQo", "h2_efXIIrQo", "Narración oral dramatizada del cuento de la Colección Árbol.",
+      "¡Hazlo en casa! Taller de ilustración con Juan Gedovius", "Taller", "https://www.youtube.com/watch?v=KCrkliD8q_U", "KCrkliD8q_U", "Taller práctico de dibujo e ilustración guiado por Juan Gedovius.",
+      "Axolotzilla contrataca, yo mejor me quedo en casa con Yucatán A go-go", "Concierto", "https://www.youtube.com/watch?v=q1CbzSXIz_o", "q1CbzSXIz_o", "Presentación musical infantil para promover valores comunitarios y salud.",
+      "¡Hazlo en casa! Tarjeta mágica con Juan Carlos Lagarde", "Taller", "https://www.youtube.com/watch?v=P000YPhfaoI", "P000YPhfaoI", "Taller de manualidades y creación de tarjetas dinámicas.",
+      "La prohibición de las lombrices con Marcela Romero", "Cuentacuentos", "https://www.youtube.com/watch?v=sgLl6kfj9hs", "sgLl6kfj9hs", "Lectura del cuento sobre la democracia, reglas y convivencia de la Colección Árbol.",
+      "¡Hazlo en casa! Taller de ilustración con Julián Cícero", "Taller", "https://www.youtube.com/watch?v=M4Hwa7cXAUg", "M4Hwa7cXAUg", "Taller de creación de personajes y expresión gráfica.",
+      "Columpio con alas con Xareny", "Cuentacuentos con títeres", "https://www.youtube.com/watch?v=WBQvDx0Wrik", "WBQvDx0Wrik", "Representación con títeres del cuento de la Colección Árbol.",
+      "¡Hazlo en casa! Taller de cómic con Ricardo Peláez", "Taller", "https://www.youtube.com/watch?v=oTLm_GkWo_A", "oTLm_GkWo_A", "Aprende a estructurar una historieta y cómic cívico.",
+      "El universo robado con Marcela Romero", "Cuentacuentos", "https://www.youtube.com/watch?v=FSIY3YP-fCE", "FSIY3YP-fCE", "Cuentacuentos interactivo de la Colección Árbol.",
+      "¡Hazlo en casa! Taller de sellos", "Taller", "https://www.youtube.com/watch?v=_IGnu0yxBMw", "_IGnu0yxBMw", "Taller de grabado y sellos caseros para la expresión artística.",
+      "Tétrico S.A. con Lalo España", "Narración", "https://www.youtube.com/watch?v=E8xynL4U5aI", "E8xynL4U5aI", "Narración especial de la obra Tétrico S.A. por Lalo España.",
+      "La recolectora de votos y Una profesora en Kenya con Tiaré Scanda", "Narración", "https://www.youtube.com/watch?v=mc4gSg2Bsro", "mc4gSg2Bsro", "Narración dramatizada sobre participación y liderazgo femenino.",
+      "Inventa juegos y juguetes con Juan Carlos Lagarde", "Narración / Taller", "https://www.youtube.com/watch?v=Qn1rNnRfSFE", "Qn1rNnRfSFE", "Taller creativo para inventar juegos de mesa e historias.",
+      "¡Hazlo en casa! Taller con Luis Felipe Rodríguez", "Taller", "https://www.youtube.com/watch?v=pKPVmOsodYw", "pKPVmOsodYw", "Taller de expresión y dinámica familiar.",
+      "Taller de collage con Julián Cícero", "Taller de verano", "https://www.youtube.com/watch?v=J9eONqZOG5s", "J9eONqZOG5s", "Taller de artes plásticas y collage.",
+      "Aprende 10 palabras en Lengua de Señas Mexicana", "Taller de verano", "https://www.youtube.com/watch?v=MZOUTIjz4ac", "MZOUTIjz4ac", "Cápsula de inclusión para aprender LSM básica.",
+      "La madre agua con Ely Guerra", "Narración", "https://www.youtube.com/watch?v=XJ-hledWXk4", "XJ-hledWXk4", "Narración oral de la obra La Madre Agua por la cantante Ely Guerra.",
+      "Taller de danza con Ale Marrón", "Taller de verano", "https://www.youtube.com/watch?v=17xEddmNAAc", "17xEddmNAAc", "Taller de movimiento corporal y danza cívica.",
+      "Escritura Creativa con Georgina Rábago", "Taller de verano", "https://www.youtube.com/watch?v=q65TAEpeK-w", "q65TAEpeK-w", "Taller para crear cuentos y relatos breves.",
+      "Fábulas Mayas", "Narración", "https://www.youtube.com/watch?v=-CN8_zUeGgE", "-CN8_zUeGgE", "Narración de fábulas de la tradición maya.",
+      "Cómo alimentarte saludablemente en casa", "Taller de verano", "https://www.youtube.com/watch?v=kQ0tc4raF98", "kQ0tc4raF98", "Taller de hábitos saludables y nutrición.",
+      "Dr. Misterio resuelve tus dudas sobre el Covid", "Taller de verano", "https://www.youtube.com/watch?v=NTKg5xeXWg8", "NTKg5xeXWg8", "Cápsula cómica-divulgativa sobre el cuidado de la salud.",
+      "Danza Cuatro amigos", "Taller de verano", "https://www.youtube.com/watch?v=-xnwbgjr3G0", "-xnwbgjr3G0", "Interpretación dancística inspirada en el cuento Cuatro Amigos.",
+      "Cuatro amigos (Lectura en maya) con Hilario Chi Canul", "Narración en Lengua Indígena", "https://www.youtube.com/watch?v=D5mCT6I0Ioc", "D5mCT6I0Ioc", "Lectura del cuento traducido y narrado en maya.",
+      "Un río para todos (Lectura en seri) con Sócrates Rodríguez", "Narración en Lengua Indígena", "https://www.youtube.com/watch?v=XRkPPGoCahI", "XRkPPGoCahI", "Lectura del cuento traducido y narrado en seri.",
+      "Columpio con alas (Taller en náhuatl) con Edgar Mesa", "Taller en Lengua Indígena", "https://www.youtube.com/watch?v=HMSDk6bO4jo", "HMSDk6bO4jo", "Taller y lectura en lengua náhuatl.",
+      "Fábulas mágicas de las tierras mayas con Amaranta Gómez", "Narración", "https://www.youtube.com/watch?v=dB0LOiz5-ts", "dB0LOiz5-ts", "Narración oral de las fábulas mágicas mayas.",
+      "¿Dónde dormí anoche? con Ely Guerra", "Narración", "https://www.youtube.com/watch?v=OVaRR5tbmRQ", "OVaRR5tbmRQ", "Narración oral por la artista Ely Guerra.",
+      "Un río para todos", "Cuentacuentos", "https://www.youtube.com/watch?v=IIX7c7pgCGA", "IIX7c7pgCGA", "Cuentacuentos completo del libro Un río para todos.",
+      "Fábula tlaxcalteca 'El coyote y la serpiente'", "Cuentacuentos", "https://www.youtube.com/watch?v=z-ZRaXGy4fo", "z-ZRaXGy4fo", "Cuentacuentos tradicional sobre la justicia y el respeto.",
+      "Cuatro amigos y Un río para todos", "Cuentacuentos", "https://www.youtube.com/watch?v=mtrwlhKjdj0", "mtrwlhKjdj0", "Cuentacuentos doble de las obras de la Colección Árbol.",
+      "El Universo robado. ¡Hazlo en casa!", "Taller de minilibro", "https://www.youtube.com/watch?v=xeqwh0NmRu4", "xeqwh0NmRu4", "Taller paso a paso para confeccionar tu propio minilibro.",
+      "Ba'alche'ob. Fábulas mágicas de las tierras mayas", "Cuentacuentos", "https://www.youtube.com/watch?v=3UjPK8a9jf8", "3UjPK8a9jf8", "Narración de Ba'alche'ob."
+    )
+
+    tarjetas_yt <- lapply(seq_len(nrow(videos_completos)), function(i) {
+      v <- videos_completos[i, ]
+      div(
+        class = "col-12 col-md-6 col-lg-4 mb-4",
+        div(
+          class = "card h-100 shadow-sm border-0", style = "border-radius: 12px; overflow: hidden;",
+          div(class = "ratio ratio-16x9 bg-dark", tags$iframe(src = paste0("https://www.youtube.com/embed/", v$yt_id), allowfullscreen = TRUE)),
+          div(
+            class = "card-body d-flex flex-column justify-content-between p-3",
+            div(
+              span(class = "badge bg-danger mb-2", v$categoria),
+              h6(class = "card-title fw-bold mb-2", v$titulo),
+              p(class = "card-text small text-secondary mb-3", v$descripcion)
+            ),
+            a(href = v$url_recurso, target = "_blank", rel = "noopener noreferrer", class = "btn btn-sm btn-outline-danger w-100 rounded-pill fw-bold", icon("youtube"), " Ver en YouTube")
+          )
+        )
+      )
+    })
+    div(class = "row", tarjetas_yt)
+  })
+
   # ============================================================================
-  # MODAL CON PESTAÑAS (RESUMEN EJECUTIVO Y ÍNDICE EN ARIAL)
+  # MODAL CON PESTAÑAS (RESUMEN EJECUTIVO E ÍNDICE)
   # ============================================================================
   observe({
     df <- datos_filtrados()
@@ -494,66 +548,69 @@ server <- function(input, output, session) {
       item <- df[i, ]
       btn_id <- paste0("btn_resumen_", item$id_obra)
 
-      observeEvent(input[[btn_id]], {
-        resumen_raw <- coalesce(item$resumen_ejecutivo_3p, "Resumen no disponible.")
-        resumen_markdown <- formatear_markdown_resumen(resumen_raw)
+      local({
+        item_local <- item
+        observeEvent(input[[btn_id]], {
+          resumen_raw <- coalesce(item_local$resumen_ejecutivo_3p, "Resumen no disponible.")
+          resumen_markdown <- formatear_markdown_resumen(resumen_raw)
 
-        titulo_obra_limpio <- limpiar_cadena_corrupta(item$titulo)
-        indice_raw <- if ("indice_tematico" %in% colnames(item) && !is.na(item$indice_tematico)) {
-          item$indice_tematico
-        } else {
-          ""
-        }
+          titulo_obra_limpio <- limpiar_cadena_corrupta(item_local$titulo)
+          indice_raw <- if ("indice_tematico" %in% colnames(item_local) && !is.na(item_local$indice_tematico)) {
+            item_local$indice_tematico
+          } else {
+            ""
+          }
 
-        indice_formatted <- formatear_indice_vista(indice_raw)
+          indice_formatted <- formatear_indice_vista(indice_raw)
 
-        showModal(modalDialog(
-          title = tagList(icon("book-open"), " Análisis Detallado de la Obra"),
-          size = "l",
-          easyClose = TRUE,
-          footer = modalButton("Cerrar"),
+          showModal(modalDialog(
+            title = tagList(icon("book-open"), " Análisis Detallado de la Obra"),
+            size = "l",
+            easyClose = TRUE,
+            footer = modalButton("Cerrar"),
 
-          tags$div(
-            class = "mb-3 pb-2 border-bottom",
-            tags$h5(titulo_obra_limpio, style = "color: #1D3557; font-weight: 700; margin-bottom: 4px;"),
-            tags$p(class = "text-muted small mb-0", paste("Colección:", limpiar_cadena_corrupta(item$coleccion), "| Eje:", limpiar_cadena_corrupta(item$eje_tematico)))
-          ),
-
-          navset_tab(
-            nav_panel(
-              title = "Resumen Ejecutivo (IA)",
-              icon = icon("brain"),
-              tags$div(
-                class = "resumen-markdown-body",
-                style = "max-height: 58vh; overflow-y: auto; padding: 22px; background: #fafafa; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px;",
-                shiny::markdown(resumen_markdown)
-              )
+            tags$div(
+              class = "mb-3 pb-2 border-bottom",
+              tags$h5(titulo_obra_limpio, style = "color: #1D3557; font-weight: 700; margin-bottom: 4px;"),
+              tags$p(class = "text-muted small mb-0", paste("Colección:", limpiar_cadena_corrupta(item_local$coleccion), "\vert{} Eje:", limpiar_cadena_corrupta(item_local$eje_tematico)))
             ),
-            nav_panel(
-              title = "Índice",
-              icon = icon("list-check"),
-              tags$div(
-                class = "indice-body",
-                style = "max-height: 58vh; overflow-y: auto; padding: 22px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 10px;",
+
+            navset_tab(
+              nav_panel(
+                title = "Resumen Ejecutivo (IA)",
+                icon = icon("brain"),
                 tags$div(
-                  style = "white-space: pre-wrap; font-size: 0.95rem; line-height: 1.5; color: #1e293b;",
-                  shiny::markdown(indice_formatted)
+                  class = "resumen-markdown-body",
+                  style = "max-height: 58vh; overflow-y: auto; padding: 22px; background: #fafafa; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px;",
+                  shiny::markdown(resumen_markdown)
+                )
+              ),
+              nav_panel(
+                title = "Índice",
+                icon = icon("list-check"),
+                tags$div(
+                  class = "indice-body",
+                  style = "max-height: 58vh; overflow-y: auto; padding: 22px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 10px;",
+                  tags$div(
+                    style = "white-space: pre-wrap; font-size: 0.95rem; line-height: 1.5; color: #1e293b;",
+                    shiny::markdown(indice_formatted)
+                  )
                 )
               )
             )
-          )
-        ))
-      }, ignoreInit = TRUE)
+          ))
+        }, ignoreInit = TRUE)
+      })
     })
   })
 
   output$tabla_acervo <- renderDT({
     df_tabla <- datos_filtrados() %>%
-      select(`Colección` = coleccion, `Título` = titulo, `Eje Temático` = eje_tematico, `Tipo` = tipo_recurso, `Acción` = url_recurso) %>%
       mutate(
-        Enlace = paste0("<a href='", `Acción`, "' target='_blank' class='btn btn-sm btn-dark rounded-pill'><i class='fa-solid fa-download'></i> Leer</a>")
+        url_limpia = sapply(url_recurso, asegurar_url_absoluta, USE.NAMES = FALSE),
+        Enlace = paste0("<a href='", url_limpia, "' target='_blank' rel='noopener noreferrer' class='btn btn-sm btn-dark rounded-pill'><i class='fa-solid fa-download'></i> Acceder</a>")
       ) %>%
-      select(`Colección`, `Título`, `Eje Temático`, `Tipo`, `Acción` = Enlace)
+      select(`Colección` = coleccion, `Título` = titulo, `Eje Temático` = eje_tematico, `Tipo` = tipo_recurso, `Acción` = Enlace)
 
     datatable(
       df_tabla, escape = FALSE, selection = "none",
